@@ -7,7 +7,7 @@ const express = require("express");
 const app = express();
 const middlewareObj = {};
 const moment = require('moment');
-
+const xoauth2 = require("xoauth2");
 
 
 const logger = require('../logger/logger')
@@ -15,25 +15,76 @@ const logger = require('../logger/logger')
 
 
 middlewareObj.isLoggedIn = function (req, res, next) {
-
+    // console.log('passed')
     if (req.isAuthenticated()) {
 
         return next();
     }
     req.session.returnTo = req.path;
     req.flash('error', 'Please Login first')
-    res.redirect("/login");
+    res.redirect("/");
 }
 //To check is user is Admin
 
+middlewareObj.sendEmail = async ({ message, subject, receiver }, req, res) => {
+    let status = {};
+    const smtpTransport = await nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+            type: 'OAuth2',
+            user: 'info.benitatravels@gmail.com',
+            clientId: '122527083108-gvkneborudehmsfmo0n8miencd9erut9.apps.googleusercontent.com',
+            clientSecret: '_f2d9Bzb-evU_nziBamReUpX',
+            refreshToken: '1/U9s9uESVN5Qe-8QBTPvoGl3yULVQF2RBhL9ZC7Qdm18'
+        }
+    })
+    let mailOptions = {
+        to: receiver,
+        from: 'info.benitatravels@gmail.com',
+        subject: subject,
+        text: message,
+    };
+    await smtpTransport.sendMail(mailOptions, (err, info) => {
+        if (err) {
+            status = {
+                type: 'error',
+                info: err
+            }
+            //console.log('It was here err', status)
+        } else {
+            status = {
+                type: 'success',
+                info: ínfo
+            }
+            console.log('It was here', status)
+        }
+        console.log('dgdhgdhdg', status)
+        return status;
+    });
 
+
+}
 middlewareObj.isAdmin = function (req, res, next) {
-    if (req.user.role === 'admin') {
-
+    if (req.user.role === 'admin' || 'master-admin') {
         return next();
-    }
+    } else {
+        logger.infoLog.info(req.user.username + " has just tried to access post-House Route ::" + "\x1b[31m" + " Access Denied!" + "\x1b[0m");
 
-    res.redirect("/somethinguser");
+        req.flash("error", "You are not privilegded to access this route!")
+        res.redirect("back");
+    }
+}
+middlewareObj.isMasterAdmin = function (req, res, next) {
+    if (req.user.role === 'master-admin') {
+        return next();
+    } else {
+        logger.infoLog.info(req.user.username + " has just tried to access unauthorized route ::" + "\x1b[31m" + " Access Denied!" + "\x1b[0m");
+
+        req.flash("error", "You are not privilegded to access this route!")
+        res.redirect("back");
+    }
 }
 
 middlewareObj.isClient = function (req, res, next) {

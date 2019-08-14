@@ -20,9 +20,9 @@ const joi = require("joi");
 
 //models
 const User = require("./models/user");
-const House = require("./models/house");
+const Package = require("./models/Package");
 const Comment = require("./models/comments");
-const Rating = require("./models/rating");
+const Bookinf = require("./models/booking");
 //const Comment             =require("./models/comments");
 //other routes
 const middleware = require("./middleware");
@@ -48,7 +48,7 @@ var authRoutes = require("./routes/auth");
 //   console.log(rootUsers)
 // })
 mongoose.set('useCreateIndex', true)
-mongoose.connect("mongodb://ken:ken1234@ds117545.mlab.com:17545/housing-app", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost:27017/benita", { useNewUrlParser: true });
 
 useMongoClient: true
 
@@ -66,7 +66,7 @@ app.use(require("express-session")({
     maxAge: 60 * 60 * 1000,
 
   },
-  store: new MongoStore({ url: "mongodb://ken:ken1234@ds117545.mlab.com:17545/housing-app" })
+  store: new MongoStore({ url: "mongodb://localhost:27017/benita" })
 
 }));
 //for displaying error
@@ -108,7 +108,9 @@ passport.deserializeUser(function (user, done) {
 
 
 app.use(express.static(publicPath));
+
 /*configure app to use body-parser*/
+app.use(express.static(__dirname));
 app.set('views', __dirname + '/views');
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -151,7 +153,7 @@ app.use(authRoutes);
 
 
 app.all('*', (req, res) => {
-  res.redirect("/index");
+  res.redirect("/");
 });
 server.listen(port, () => {
   console.log(`Benita-Travels iS rUnNiNg On PoRt ${port} `);

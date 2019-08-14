@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
 var passportLocalMongoose = require("passport-local-mongoose");
-
+const mongoosePaginate = require("mongoose-aggregate-paginate-v2");
+const { Schema } = mongoose;
 var UserSchema = new mongoose.Schema({
   username: { type: String, unique: true },
   fname: String,
@@ -9,8 +10,9 @@ var UserSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['admin', 'client'],
-    default: 'user',
+    default: 'client',
   },
+  phone: { type: Number },
   marital: {
     type: String,
     enum: ['Single', 'Married'],
@@ -25,12 +27,16 @@ var UserSchema = new mongoose.Schema({
   total_reviews: Number,
   verifyToken: { type: String, unique: true },
   verifyExpires: Date,
-  profilepic: { type: String, default: './public/assets/img/brand/favicon.png' },
+  profilepic: { type: String, default: 'assets/img/brand/favicon.png' },
   resetPasswordToken: String, default: '',
   // resetPasswordExpires:String, default:'',
   isVerified: {
     type: Boolean,
     default: false,
+  },
+  registeredBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'Users'
   },
   isActive: {
     type: Boolean,
@@ -58,5 +64,5 @@ UserSchema.methods.toJSON = function () {
 };
 
 UserSchema.plugin(passportLocalMongoose);
-
+UserSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model("User", UserSchema);
