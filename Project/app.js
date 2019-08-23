@@ -31,30 +31,17 @@ var passport = require("passport");
 var app = express();
 var server = require('http').createServer(app);
 
-//io file
-
 var indexRoutes = require("./routes/index");
 var authRoutes = require("./routes/auth");
 
-
-
-// Make io accessible to our router
-// app.use(function(req,res,next){
-//     req.io = io;
-//     next();
-// });
-// var rootUsers = socketUsers.Users;
-// io.on('connection',(socket)=>{
-//   console.log(rootUsers)
-// })
-mongoose.set('useCreateIndex', true)
-mongoose.connect("mongodb://localhost:27017/benita", { useNewUrlParser: true });
-
-useMongoClient: true
-
+mongoose.promise = global.Promise;
+mongoose.set("useCreateIndex", true);
+mongoose.connect(
+  "mongodb+srv://sysdev:12345678@@cluster0-bpv3h.mongodb.net/test?retryWrites=true&w=majority",
+  { useNewUrlParser: true }
+);
+useMongoClient: true;
 const publicPath = path.join(__dirname, './public');
-//logger.infoLog.info('Logs should work');
-//logger.errorLog.error('Errors should log');
 
 app.use(require("express-session")({
   secret: "The housing app",
@@ -66,7 +53,7 @@ app.use(require("express-session")({
     maxAge: 60 * 60 * 1000,
 
   },
-  store: new MongoStore({ url: "mongodb://localhost:27017/benita" })
+  store: new MongoStore({ url: "mongodb+srv://sysdev:12345678@@cluster0-bpv3h.mongodb.net/test?retryWrites=true&w=majority" })
 
 }));
 //for displaying error
@@ -84,27 +71,7 @@ passport.deserializeUser(function (user, done) {
 
 
 
-// //Passport socket io configuration
-// io.use(passportSocketIo.authorize({
-//   cookieParser: require('cookie-parser'),       // the same middleware you registrer in express
-//    key:          'express.sid',       // the name of the cookie where express/connect stores its session_id
-//   secret:       'house-recommender',    // the session_secret to parse the cookie
-//   store:        new MongoStore({url:"mongodb://ken:ken1234@ds117545.mlab.com:17545/housing-app"}),        // we NEED to use a sessionstore. no memorystore please
-//   success:      onAuthorizeSuccess,  // *optional* callback on success - read more below
-//   fail:         onAuthorizeFail,     // *optional* callback on fail/error - read more below
-// }));
 
-// function onAuthorizeSuccess(data, accept){
-//   console.log('successful connection to socket.io');
-//      accept();
-// }
-// function onAuthorizeFail(data, message, error, accept){
-//   if(error)
-//    // console.log(message);
-//   console.log('failed connection to socket.io:', message);
-//   // We use this callback to log all of our failed connections.
-//   accept(null, false);
-// }
 
 
 app.use(express.static(publicPath));

@@ -25,16 +25,14 @@ const cloudinaryStorage = require("multer-storage-cloudinary");
 
 
 cloudinary.config({
-    cloud_name: 'do7m8vtor',
-    api_key: 885839233384236,
-    api_secret: "4gbzBw8I2RwM6N2R-cRQhde5Kts"
+    cloud_name: 'dgjg3igwq',
+    api_key: 814488121398749,
+    api_secret: "x6uSLum7fl98ffZHlHVpALC0o04"
 });
 let token = crypto.randomBytes(7).toString('hex');
 //Mutler configuration move during refactoring
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, __dirname + '/../public/packageImages')
-    },
+
 
     filename: function (req, file, callback) {
         let name = req.body.name;
@@ -58,14 +56,7 @@ const storage = multer.diskStorage({
         next(err);
     }
 });
-// let storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, 'packageImages')
-//     },
-//     filename: function (req, file, cb) {
-//         cb(null, file.fieldname + '-' + Date.now())
-//     }
-// })
+
 let fileFilter = function (req, file, cb) {
     // accept image files only
     if (req.originalUrl == '/profilepic') {
@@ -201,16 +192,52 @@ router.get('/add_packages', Middleware.isLoggedIn, Middleware.isAdmin, (req, res
 });
 
 
-router.post('/add_packages', Middleware.isLoggedIn, upload.single('packagePic'), (req, res) => {
-    const { body, file, user } = req;
-    // console.log(body, file)
-    if (!body.name || !body.type || !body.loc || !body.price || !body.desc || !body.feature || !file) {
-        req.flash('error', 'All fields should be filled including image upload')
-        return res.redirect('back');
+router.post('/add_packages', Middleware.isLoggedIn, upload.array('packagePic'), async (req, res) => {
+    const { body, files, user } = req;
+    // console.log(body, files)
+    const filePaths = files;
 
-    }
+    // if (!body.name || !body.type || !body.loc || !body.price || !body.desc || !body.feature || filePaths.length < 3) {
+    //     req.flash('error', 'All fields should be filled including  3 image upload')
+    //     return res.redirect('back');
+
+    // }
     let newPackage = {};
-    newPackage = { ...body };
+    newPackage = { ...body, images: [] };
+    let multipleUpload = new Promise(async (resolve, reject) => {
+        let upload_len = filePaths.length
+            , upload_res = new Array();
+        // console.log(filePaths)
+        for (let i = 0; i < upload_len; i++) {
+            let filePath = filePaths[i].path;
+
+            await cloudinary.v2.uploader.upload(filePath, (error, result) => {
+                //console.log( upload_res.length +"vs"+ upload_len)
+                if (upload_res.length === upload_len - 1) {
+                    /* resolve promise after upload is complete */
+                    upload_res.push(result)
+                    // console.log('Upload Response', upload_res)
+                    resolve(upload_res)
+                } else if (result) {
+                    // console.log('Upload Response', upload_res)
+                    /*push public_ids in an array */
+                    upload_res.push(result);
+                } else if (error) {
+                    console.log('Error', error)
+                    reject(error)
+                }
+
+            })
+
+        }
+    })
+        .then((result) => result)
+        .catch((error) => error)
+    let upload = await multipleUpload;
+    upload.forEach((upload, ) => {
+        newPackage.images.push(upload.secure_url);
+    });
+    //console.log(newPackage)
     Package.findOne({ name: newPackage.name })
         .then(async (package) => {
             if (package) {
@@ -219,9 +246,9 @@ router.post('/add_packages', Middleware.isLoggedIn, upload.single('packagePic'),
                 req.flash('error', 'Package Name Already exists')
                 res.redirect('back');
             } else {
-                file.path.replace("\\", "\"");
 
-                newPackage = new Package({ ...newPackage, images: file.path, addedBy: user._id });
+
+                newPackage = new Package({ ...newPackage, addedBy: user._id });
                 // console.log(newPackage);
                 newPackage.save();
                 console.log(newPackage)
@@ -230,6 +257,7 @@ router.post('/add_packages', Middleware.isLoggedIn, upload.single('packagePic'),
             }
         })
         .catch((err) => {
+            console.log(err)
             req.flash('error', err)
             res.redirect('back');
         })

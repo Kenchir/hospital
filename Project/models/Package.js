@@ -12,9 +12,9 @@ var PackageSchema = new mongoose.Schema({
   feature: String,
   loc: String,
 
-  images: {
+  images: [{
     type: String
-  },
+  }],
 }, { timestamps: true });
 
 PackageSchema.methods.toJSON = function () {
