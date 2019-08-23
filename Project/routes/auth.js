@@ -5,8 +5,8 @@ const House = require("../models/Package");
 
 const Booking = require("../models/booking");
 
-const Comment = require("../models/comments");
-const Viewed = require("../models/houseviewed");
+// const Comment = require("../models/comments");
+// const Viewed = require("../models/houseviewed");
 var passport = require("passport");
 var moment = require("moment");
 var middleware = require("../middleware");
@@ -59,11 +59,19 @@ router.get("/register", (req, res) => {
 })
 router.post("/login", passport.authenticate("local", { failureFlash: "Sorry, Wrong Credentials!", failureRedirect: "/login" }), function (req, res) {
     logger.infoLog.info(middleware.capitalize(req.user.username) + " has just logged in " + " at " + moment(moment().valueOf()).format('h:mm:a,  Do MMMM  YYYY,,'))
-    if ((req.user.role == 'house-Owner') && (req.user.isVerified == false)) {
-        req.flash('error', 'Your Account has not been verified. Kindly Check your email  registration to verify your account.')
+
+    if ((req.user.role == 'admin') && (req.user.isActive == false)) {
+        req.flash('error', 'Your Account has  been suspended.  Contact your admin.')
         res.redirect('back');
         delete req.session.returnTo;
+    } else if (req.user.role == 'client') {
+
+        req.flash("success", "Login successful!")
+        res.redirect(req.session.returnTo || '/client');
+        delete req.session.returnTo;
     } else {
+        console.log('Role', req.user.role)
+
         req.flash("success", "Login successful!")
         res.redirect(req.session.returnTo || '/admin');
         delete req.session.returnTo;
@@ -82,7 +90,7 @@ router.get("/logout", function (req, res) {
                 logger.errorLog.error(err);
             } else {
 
-                res.redirect("/login");
+                res.redirect("/");
             }
         });
     } else {

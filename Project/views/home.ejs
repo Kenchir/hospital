@@ -60,7 +60,12 @@
 
           <li><a href="#contact">Contact</a></li>
           <% if(currentUser){%>
+          <%if(currentUser.role=='client'){%>
+          <li><a href="/client">Dashboard</a></li>
+          <%}else{%>
           <li><a href="/admin">Dashboard</a></li>
+          <%}%>
+         
           <%}else{%>
           <li><a href="/login">Login</a></li>
           <%}%>

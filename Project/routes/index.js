@@ -4,12 +4,14 @@ const User = require("../models/user");
 const mongoose = require('mongoose');
 const Booking = require("../models/booking");
 const Package = require("../models/Package");
-const Comment = require("../models/comments");
-const Viewed = require("../models/houseviewed");
+//const Comment = require("../models/comments");
+//const Viewed = require("../models/houseviewed");
 const Nodemailer = require("nodemailer");
 const formidable = require('formidable')
 const Middleware = require("../middleware");
-let crypto = require("crypto");
+const Conversations = require("../models/conversation");
+const Message = require("../models/message");
+const crypto = require("crypto");
 const fs = require('fs')
 const logger = require('../logger/logger')
 
@@ -100,15 +102,42 @@ router.get("/", (req, res) => {
         })
     // res.render("home");
 });
+router.get('/users', Middleware.isLoggedIn, Middleware.isAdmin, async (req, res) => {
 
+    let aggregate = User.aggregate([{ $match: { role: 'client' } }])
+
+
+        .lookup({
+            from: "bookings",
+            let: { userId: "$_id" },
+            pipeline: [
+                { $addFields: { userId: "$userId" } },
+                { $match: { $expr: { $eq: ["$clientId", "$$userId"] } } },
+                { $project: { _id: 1 } }
+            ],
+
+            as: "bookings"
+        })
+
+        .project({ __v: 0 });
+    const options = {
+
+    };
+    User.aggregatePaginate(aggregate, options)
+        .then(result => {
+
+            // console.log('[docs]', result.docs);
+
+
+            res.render('users', { users: result.docs })
+        })
+});
 router.get('/admin', Middleware.isLoggedIn, Middleware.isAdmin, async (req, res) => {
 
     let users = await User.find({ role: 'client' }).sort({ createdAt: -1 }).limit(6);
     // let bookings= await Booking.find().sort({createdAt:-1}).limit(6);
     let packages = await Package.find().sort({ createdAt: -1 }).limit(6);
-    let aggregate = Booking.aggregate()
-
-
+    let aggregate = Booking.aggregate([{ $sort: { createdAt: -1 } }, { $limit: 6 }])
         .lookup({
             from: "packages",
             let: { userId: "$packageId" },
@@ -140,54 +169,34 @@ router.get('/admin', Middleware.isLoggedIn, Middleware.isAdmin, async (req, res)
     let bookings = await Booking.aggregatePaginate(aggregate, options)
     console.log(bookings.docs.length)
     res.render('index', { packages: packages, bookings: bookings.docs, users: users });
+
     // console.log(data)
 
 });
-router.get('/users', Middleware.isLoggedIn, Middleware.isAdmin, async (req, res) => {
 
-    let aggregate = User.aggregate([{ $match: { role: 'client' } }])
-
-
+router.get('/client', Middleware.isLoggedIn, Middleware.isClient, async (req, res) => {
+    const { user } = req;
+    let packages = await Package.find().sort({ createdAt: -1 }).limit(3)
+    let aggregate = Booking.aggregate([{ $match: { clientId: mongoose.Types.ObjectId(user._id) } }, { $sort: { createdAt: -1 } }, { $limit: 3 }])
         .lookup({
-            from: "bookings",
-            let: { userId: "$_id" },
+            from: "packages",
+            let: { userId: "$packageId" },
             pipeline: [
-                { $addFields: { userId: "$userId" } },
-                { $match: { $expr: { $eq: ["$clientId", "$$userId"] } } },
-                { $project: { _id: 1 } }
+                { $addFields: { userId: { $toObjectId: "$userId" } } },
+                { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
+                { $project: { name: 1, price: 1, loc: 1 } }
             ],
 
-            as: "bookings"
+            as: "package"
         })
-
         .project({ __v: 0 });
-    const options = {
+    const options = {};
 
-    };
-    User.aggregatePaginate(aggregate, options)
-        .then(result => {
-
-            // console.log('[docs]', result.docs);
-
-
-            res.render('users', { users: result.docs })
-        })
-});
-router.get('/client', Middleware.isLoggedIn, Middleware.isClient, (req, res) => {
-    Package.find({})
-        .then(data => {
-            if (data) {
-                // console.log(data)
-                res.render('index', { data: data });
-            }
-        })
-        .catch((err) => {
-            req.flash('error', err)
-            res.redirect('back');
-        })
-
+    let bookings = await Booking.aggregatePaginate(aggregate, options)
+    res.render('index', { packages: packages, bookings: bookings.docs });
 })
-router.get('/add_packages', Middleware.isLoggedIn, (req, res) => {
+router.get('/add_packages', Middleware.isLoggedIn, Middleware.isAdmin, (req, res) => {
+
     res.render('add_package');
 });
 
@@ -246,6 +255,19 @@ router.get('/packages/:id/view', Middleware.isLoggedIn, (req, res) => {
             if (data) {
                 // console.log(data)
                 res.render('each_package', { report: data });
+            }
+        })
+        .catch((err) => {
+            req.flash('error', err)
+            res.redirect('back');
+        })
+});
+router.get('/edit_package/:id', Middleware.isLoggedIn, Middleware.isAdmin, (req, res) => {
+    Package.findOne({ _id: req.params.id })
+        .then((data) => {
+            if (data) {
+                // console.log(data)
+                res.render('edit_package', { report: data });
             }
         })
         .catch((err) => {
@@ -402,6 +424,19 @@ router.get('/bookings', Middleware.isLoggedIn, Middleware.isAdmin, (req, res) =>
 
 })
 //let pictures=upload.single('image');
+
+
+
+
+router.get('/complains', Middleware.isLoggedIn, Middleware.isClient, (req, res) => {
+    res.render('clientComplains')
+});
+
+router.post('/complains', Middleware.isLoggedIn, (req, res) => {
+    const { user, body } = req;
+    console.log(body)
+
+});
 router.post("/upload", Middleware.isLoggedIn, upload.array('images'), async (req, res, next) => {
 
     let filePaths = req.files;

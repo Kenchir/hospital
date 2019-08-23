@@ -21,7 +21,7 @@ const joi = require("joi");
 //models
 const User = require("./models/user");
 const Package = require("./models/Package");
-const Comment = require("./models/comments");
+
 const Bookinf = require("./models/booking");
 //const Comment             =require("./models/comments");
 //other routes

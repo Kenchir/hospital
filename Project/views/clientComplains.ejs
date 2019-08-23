@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title> Benita | Dashboard</title>
+    <title>Benita | Packages</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -15,10 +15,14 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/fontawesome-animation.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="bower_components/Ionicons/css/ionicons.min.css">
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href="plugins/iCheck/all.css">
     <!-- jvectormap -->
     <link rel="stylesheet" href="bower_components/jvectormap/jquery-jvectormap.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="dist/css/AdminLTE.min.css">
+    <!-- data table css -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="dist/css/skins/_all-skins.min.css">
@@ -33,23 +37,6 @@
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
-    <style>
-        #map2 {
-            height: 405px;
-            /* The height is 400 pixels */
-            width: 100%;
-            /* The width is the width of the web page */
-        }
-
-        .dot {
-            height: 15px;
-            width: 15px;
-            border: 1px solid black;
-            opacity: 0.8;
-            border-radius: 50%;
-            display: inline-block;
-        }
-    </style>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -60,11 +47,9 @@
             <!-- Logo -->
             <a href="#" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b></b></span>
+                <span class="logo-mini"><b>Benita</b></span>
                 <!-- logo for regular state and mobile devices -->
-
-                <span class="logo-lg"><b></b></span>
-
+                <span class="logo-lg"><b> Benita Travels</b></span>
             </a>
 
             <!-- Header Navbar: style can be found in header.less -->
@@ -105,10 +90,9 @@
 
                                     </ul>
                                 </li>
-                                <li class="footer"><a href="/notifications">Open Notifications</a></li>
+                                <li class="footer"><a href="#">View all</a></li>
                             </ul>
                         </li>
-
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -172,13 +156,13 @@
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
                     <% if(currentUser.role=="client"){ %>
-                    <li class="active ">
-                        <a href="#">
+                    <li class="">
+                        <a href="/client">
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="/my_bookings">
+                    <li class="">
+                        <a href="/my_bokings">
                             <i class="fa  fa-briefcase"></i>
                             <span>My Bookings</span>
                             <span class="pull-right-container">
@@ -186,8 +170,8 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a href="/complains">
+                    <li class="active">
+                        <a href="#">
                             <i class="fa fa-cart-plus"></i>
                             <span>Complaints</span>
                             <span class="pull-right-container">
@@ -202,18 +186,18 @@
                         </a>
                     </li>
                     <%}%>
-                    <li class="">
-                        <a href="/packages">
-                            <i class="fa fa-inbox"></i>
-                            <span>View packages</span>
-                            <span class="pull-right-container">
-
-                            </span>
-                        </a>
-
-                    </li>
-                    
-                    <% if(currentUser.role=="master-admin"){ %>
+                                    <li class="">
+                                        <a href="/packages">
+                                            <i class="fa fa-inbox"></i>
+                                            <span>View packages</span>
+                                            <span class="pull-right-container">
+                
+                                            </span>
+                                        </a>
+                
+                                    </li>
+                                    
+                                    <% if(currentUser.role=="master-admin"){ %>
                     <li>
                         <a href="/add_admin">
                             <i class="fa fa-plus-square"></i>
@@ -278,379 +262,108 @@
                 <%= success %>
             </div>
             <% }%>
-            <%if(error && error.length > 0){%>
-
-            <div class="alert alert-warning alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <h4><i class="icon fa fa-check"></i> Alert!</h4>
-                <%= error %>
-            </div>
-            <% }%>
             <section class="content-header">
                 <h1>
-                    Dashboard
+                    My Bookings
                     <!--<small>Version 2.0</small>-->
                 </h1>
                 <ol class="breadcrumb">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> <%=currentUser.username%></a></li>
-                    <li class="active">Dashboard</li>
+                    <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
+                    <li class="active">Bookings</li>
 
                 </ol>
             </section>
 
             <!-- Main content -->
             <section class="content">
-                <!-- Info boxes -->
                 <div class="row">
-
-
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="small-box bg-yellow">
-                            <div class="inner">
-                                <h3><%=packages.length%></h3>
-
-                                <p>Packages</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fa  fa-ship"></i>
-                            </div>
-                            <a href="/packages" class="small-box-footer">
-                                More info <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="small-box bg-green">
-                            <div class="inner">
-                                <h3><%=bookings.length%></h3>
-
-
-                                <p>Bookings</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fa fa-shopping-cart"></i>
-                            </div>
-                            <a href="" class="small-box-footer">
-                                More info <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="small-box bg-red">
-                            <div class="inner">
-                                <h3>Coming soon</h3>
-
-                                <p>Enquiries</p>
-                            </div>
-                            <div class="icon">
-                                <i class="fa fa-comments-o"></i>
-                            </div>
-                            <a href="#" class="small-box-footer">
-                                More info <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <%if(currentUser.role=='master-admin' || currentUser.role=='admin'){%>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
-                        <div class="small-box bg-blue">
-                            <div class="inner">
-                                <h3><%=users.length%></h3>
-
-                                <p>Users</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person-add"></i>
-                            </div>
-                            <a href="/users" class="small-box-footer">
-                                More info <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <%}%>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-
-                <!-- /.row -->
-
-                <!-- Main row -->
-<%if((currentUser.role=='master-admin') || (currentUser.role=='admin')){%>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- TABLE: LATEST ORDERS -->
-                            <div class="box box-info">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Latest Inquiries Users</h3>
-
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                                class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                <!-- /.box-header -->
-                                <div class="box-body">
-                                    <div class="table-responsive">
-                                        <table class="table no-margin">
-                                            <thead>
-                                                <tr>
-
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <p>Comming soon</p>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- /.table-responsive -->
-                                </div>
-                                <!-- /.box-body -->
-                                <div class="box-footer clearfix">
-
-                                    <a href="/users" class="btn btn-sm btn-info btn-flat pull-right">View All
-                                        users</a>
-                                </div>
-                                <!-- /.box-footer -->
-                            </div>
-                        </div>
-                        <!-- right col -->
-                        <div class="col-md-6">
-                            <!-- TABLE: LATEST ORDERS -->
-                            <div class="box box-info">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Latest joined Users</h3>
-
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                                class="fa fa-minus"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                                class="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                <!-- /.box-header -->
-                                <div class="box-body">
-                                    <div class="table-responsive">
-                                        <table class="table no-margin">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Name</th>
-                                                    <th>Phone</th>
-
-                                                    <th>E-mail</th>
-
-
-
-
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <%users.map((each,i)=>{%>
-                                                <tr>
-                                                    <td><%= i+1 %></td>
-                                                    <td><%= each.name%></td>
-                                                    <td><%= each.phone %></td>
-                                                    <td><%= each.email %></td>
-
-                                                </tr>
-                                                <%})%>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!-- /.table-responsive -->
-                                </div>
-                                <!-- /.box-body -->
-                                <div class="box-footer clearfix">
-
-                                    <a href="/users" class="btn btn-sm btn-info btn-flat pull-right">View All
-                                        users</a>
-                                </div>
-                                <!-- /.box-footer -->
-                            </div>
-                        </div>
-                    </div>
-                    <%}%>
-                <div class="row">
-                    <!-- /.col -->
-
                     <div class="col-md-6">
-                        <!-- TABLE: LATEST ORDERS -->
-                        <div class="box box-info">
+                        <!-- DIRECT CHAT -->
+                        <div class="box box-warning direct-chat direct-chat-warning">
                             <div class="box-header with-border">
-                                <h3 class="box-title">Recent Added Packages</h3>
+                                <h3 class="box-title">Direct Chat</h3>
 
                                 <div class="box-tools pull-right">
+                                    <span data-toggle="tooltip" title="" class="badge bg-yellow"
+                                        data-original-title="3 New Messages">3</span>
                                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
                                             class="fa fa-minus"></i>
                                     </button>
+                                    <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title=""
+                                        data-widget="chat-pane-toggle" data-original-title="Contacts">
+                                        <i class="fa fa-comments"></i></button>
                                     <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                            class="fa fa-times"></i></button>
+                                            class="fa fa-times"></i>
+                                    </button>
                                 </div>
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
-                                <div class="table-responsive">
-                                    <table class="table no-margin">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th>Name</th>
-                                                <th>Type</th>
+                                <!-- Conversations are loaded here -->
+                                <div class="direct-chat-messages">
+                                    <!-- Message. Default to the left -->
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-info clearfix">
+                                            <span class="direct-chat-name pull-left">Alexander Pierce</span>
+                                            <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span>
+                                        </div>
+                                        <!-- /.direct-chat-info -->
+                                        <img class="direct-chat-img" src="dist/img/user1-128x128.jpg"
+                                            alt="message user image">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text">
+                                            Is this template really for free? That's unbelievable!
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                    <!-- /.direct-chat-msg -->
 
-                                                <th>Location</th>
+                                    <!-- Message to the right -->
+                                    <div class="direct-chat-msg right">
+                                        <div class="direct-chat-info clearfix">
+                                            <span class="direct-chat-name pull-right">Sarah Bullock</span>
+                                            <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span>
+                                        </div>
+                                        <!-- /.direct-chat-info -->
+                                        <img class="direct-chat-img" src="dist/img/user3-128x128.jpg"
+                                            alt="message user image">
+                                        <!-- /.direct-chat-img -->
+                                        <div class="direct-chat-text">
+                                            You better believe it!
+                                        </div>
+                                        <!-- /.direct-chat-text -->
+                                    </div>
+                                    <!-- /.direct-chat-msg -->
 
-                                                <th>Price</th>
+                                    <!-- Message. Default to the left -->
 
+                                    <!-- /.direct-chat-msg -->
 
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <%packages.map((each,i)=>{%>
-                    <tr>
-                        <td><%= i+1 %></td>
-                        <td><%= each.name%></td>
-                        <td><%= each.type %></td>
-                        <td><%= each.loc %></td>
-                        <td>$ <%= each.price %></td>
-                    </tr>
-                    <%})%>
-                    </tbody>
-                    </table>
-                </div>
-                <!-- /.table-responsive -->
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer clearfix">
-
-            <a href="/packages" class="btn btn-sm btn-info btn-flat pull-right">View All
-                packages</a>
-        </div>
-        <!-- /.box-footer -->
-    </div>
-    </div>
-    <div class="col-md-6">
-        <!-- TABLE: LATEST ORDERS -->
-        <div class="box box-info">
-            <div class="box-header with-border">
-                <h3 class="box-title"> <% if(currentUser.role=='client'){%>My<%}%>Latest Bookings</h3>
-
-                                <div class="box-tools pull-right">
-                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i
-                                            class="fa fa-minus"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i
-                                            class="fa fa-times"></i></button>
                                 </div>
-                            </div>
-                            <!-- /.box-header -->
-                            <div class="box-body">
-                                <div class="table-responsive">
-                                    <table class="table no-margin">
-                                        <%if(currentUser.role=='client'){%>
-                    <thead>
-                        <tr>
-                            <th></th>
+                                <!--/.direct-chat-messages-->
 
-                            <th>Booking Date</th>
-                            <th>Type</th>
-                            <th>Package Name</th>
-                            <th>Package Price</th>
+                                <!-- Contacts are loaded here -->
 
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <%bookings.forEach((user,i)=>{%>
-                        <tr>
-
-                            <td><%= i+1%></td>
-
-                            <td><% let p= new Date(user.createdAt)%><%= p.getDate()+'/'+ p.getMonth()+'/'+p.getFullYear()%>
-                            </td>
-                            <td><%=user.type%></td>
-                            <td> <%=user.package[0].name%> </td>
-                            <td>$ <%=user.package[0].price%> </td>
-                            <td> <%if(user.status=='pending'){%><span
-                                    class="badge bg-yellow">Pending</span><%}else{%><span
-                                    class="badge bg-green">Confirmed</span><%}%></td>
-                                                        
-                                                                                                    
-                                                                                                </tr>
-                                                        
-                                                                                                <% }) %>
-
-                    </tbody>
-
-                    <%}else{%>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th> Name</th>
-
-                            <th>Phone</th>
-
-                            <th>Date</th>
-
-                            <th>Package</th>
-
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <%bookings.forEach((user,i)=>{%>
-                        <tr>
-
-                            <td><%= i+1%></td>
-                            <td><%=capitalize(user.client[0].fname)+' '+capitalize(user.client[0].lname)%>
-                            </td>
-                            <td><%= 0+user.client[0].phone%></td>
-                            <td><% let p= new Date(user.createdAt)%><%= p.getDate()+'/'+ p.getMonth()+'/'+p.getFullYear()%>
-                            </td>
-
-                            <td> <%=user.package[0].name%> </td>
-
-                            <td> <%if(user.status=='pending'){%><span
-                                    class="badge bg-yellow">Pending</span><%}else{%><span
-                                    class="badge bg-green">Confirmed</span><%}%></td>
-            
-                                                        
-                                                    </tr>
-            
-                                                    <% }) %>
-
-                    </tbody>
-                    <%}%>
-                                    </table>
-                                </div>
-                                <!-- /.table-responsive -->
+                                <!-- /.direct-chat-pane -->
                             </div>
                             <!-- /.box-body -->
-                            <div class="box-footer clearfix">
-<%if(currentUser.role=='client'){%>
-                    <a href="/bookings" class="btn btn-sm btn-info btn-flat pull-right">View All
-                        Bookings</a>
-                    <%}else{%>
-                    <a href="/my_bookings" class="btn btn-sm btn-info btn-flat pull-right">View All
-                        My Bookings</a>
-                    <%}%>
+                            <div class="box-footer">
+                                <form action="/complains" method="post">
+                                    <div class="input-group">
+                                        <textarea class="form-control" name='msg' rows="3"
+                                            placeholder="Leave your message" onchange="showButton()"></textarea>
+                                        <span class="input-group-btn">
+                                            <input type="submit" class="btn btn-warning btn-flat sendMsg" value="Send">
+
+                                        </span>
+                                    </div>
+                                </form>
                             </div>
-                            <!-- /.box-footer -->
+                            <!-- /.box-footer-->
                         </div>
+                        <!--/.direct-chat -->
                     </div>
-
-
-
-
-                    <!-- /.col -->
                 </div>
-                <!-- /.row -->
             </section>
             <!-- /.content -->
         </div>
@@ -660,7 +373,7 @@
             <div class="pull-right hidden-xs">
                 <b>Version</b> 2.4.0
             </div>
-            <strong>Copyright &copy; 2019<a href="github.com/Kenchir"> Benita Tours</a>.</strong> All rights
+            <strong>Copyright &copy; 2018<a href="https://adminlte.io"> Dev Team Ke</a>.</strong> All rights
             reserved.
         </footer>
 
@@ -787,7 +500,7 @@
 
                         <div class="form-group">
                             <label class="control-sidebar-subheading">
-                                Report panel usage
+                                user panel usage
                                 <input type="checkbox" class="pull-right" checked>
                             </label>
 
@@ -866,6 +579,8 @@
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- FastClick -->
     <script src="bower_components/fastclick/lib/fastclick.js"></script>
+    <!-- iCheck 1.0.1 -->
+    <script src="plugins/iCheck/icheck.min.js"></script>
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.min.js"></script>
     <!-- Sparkline -->
@@ -875,36 +590,84 @@
     <script src="plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
     <!-- SlimScroll -->
     <script src="bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-    <!-- ChartJS -->
-    <script src="bower_components/chart.js/Chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="dist/js/pages/dashboard2.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="dist/js/demo.js"></script>
-    <!--chart plugin-->
-
-    <!--<script src="/scripts/chartjs-labels.js"></script>-->
+    <!--data table-->
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src=""></script>
     <!--Socket io-->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/scripts/socket.js"></script>
-    <!--map api-->
+    <!--initialize table-->
     <script>
-        function initMap() {
-            // your code
+        document.querySelector('sendMsg').hidden;
+        const showButton = () => {
+            document.querySelector('sendMsg').disabled = true;
         }
+        $(document).ready(function () {
+            $('.sendMsg').hide();
+            if (screen.width < 600) {
+                var table = $('#users').DataTable({
+                    "scrollX": true, dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ]
+                });
+            } else {
+                var table = $('#users').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', 'csv', 'excel', 'pdf', 'print'
+                    ]
+                });
+            }
+            $('.type').change(function () {
+                table.column(1).search(this.value).draw();
+            })
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+            $('.type').on('ifChecked', function (event) {
+
+                table.column(1).search(this.value).draw();
+                // $('.type2').iCheck('uncheck');
+                // $('.type3').iCheck('uncheck');
+            });
+            $('.type2').on('ifChecked', function (event) {
+
+                table.column(4).search(this.value).draw();
+                // $('.type').iCheck('uncheck');
+                // $('.type3').iCheck('uncheck');
+            });
+            $('.type3').on('ifChecked', function (event) {
+
+                table.column(3).search(this.value).draw();
+                // $('.type2').iCheck('uncheck');
+                // $('.type1').iCheck('uncheck');
+            });
+            $('#resetB').click(function () {
+                table.column(3).search('').draw();
+                table.column(4).search('').draw();
+                table.column(1).search('').draw();
+                $('.type3').iCheck('uncheck');
+                $('.type2').iCheck('uncheck');
+                $('.type').iCheck('uncheck');
+            });
+        });
     </script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-dDXT3_ovgGRfe7Gb3khE1_jv-eWR7k4&callback=initMap">
-        </script>
-
-    <script>
-
-
-    </script>
-
-    <!--initialize chart-->
-
 </body>
 
 </html>

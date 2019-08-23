@@ -155,25 +155,14 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
-                    <li class=" ">
-                        <a href="/admin">
+                    <% if(currentUser.role=="client"){ %>
+                    <li class="">
+                        <a href="/client">
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
-
-                    <li class="">
-                        <a href="/packages">
-                            <i class="fa fa-inbox"></i>
-                            <span>View packages</span>
-                            <span class="pull-right-container">
-
-                            </span>
-                        </a>
-
-                    </li>
-                    <% if(currentUser.role=="client"){ %>
                     <li class="active">
-                        <a href="/my_bookings">
+                        <a href="#">
                             <i class="fa  fa-briefcase"></i>
                             <span>My Bookings</span>
                             <span class="pull-right-container">
@@ -181,10 +170,34 @@
                         </a>
                     </li>
 
+                    <li>
+                        <a href="/compalains">
+                            <i class="fa fa-cart-plus"></i>
+                            <span>Complaints</span>
+                            <span class="pull-right-container">
+                            </span>
+                        </a>
+                    </li>
 
-
-                    <% } %>
-                    <% if(currentUser.role=="master-admin"){ %>
+                    <% }else{ %>
+                    <li class="active ">
+                        <a href="#">
+                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <%}%>
+                                    <li class="">
+                                        <a href="/packages">
+                                            <i class="fa fa-inbox"></i>
+                                            <span>View packages</span>
+                                            <span class="pull-right-container">
+                
+                                            </span>
+                                        </a>
+                
+                                    </li>
+                                    
+                                    <% if(currentUser.role=="master-admin"){ %>
                     <li>
                         <a href="/add_admin">
                             <i class="fa fa-plus-square"></i>
@@ -204,7 +217,7 @@
                     </li>
 
                     <% } %>
-                    <% if((currentUser.role==='master-admin')||(currentUser.role==='admin')){%>
+                    <% if((currentUser.role==="master-admin")||(currentUser.role==="admin")){%>
                     <li>
                         <a href="/users">
                             <!--<i class=""></i>-->
@@ -215,7 +228,7 @@
                         </a>
                     </li>
                     <li class="">
-                        <a href="/packages">
+                        <a href="/add_packages">
                             <i class="fa fa-inbox"></i>
                             <span>Add package</span>
                             <span class="pull-right-container">
@@ -223,6 +236,14 @@
                             </span>
                         </a>
 
+                    </li>
+                    <li>
+                        <a href="/bookings">
+                            <i class="fa  fa-briefcase"></i>
+                            <span>Bookings</span>
+                            <span class="pull-right-container">
+                            </span>
+                        </a>
                     </li>
                     <% }%>
                 </ul>

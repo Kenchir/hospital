@@ -272,19 +272,20 @@
                                 <table id="users" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <th>Book No</th>
-                                            <th>Client Name</th>
+                                            <th> No</th>
+                                            <th>Date</th>
+                                            <th> Name</th>
                                             <th>Phone</th>
-                                            <th>Package Name</th>
+                                            <th>Package </th>
 
                                             <th>Price</th>
                                             <th>Book Type</th>
-                                            <th>No Of people</th>
+                                            <th>People No</th>
                                             <th>Bill</th>
 
 
                                             <th> Status</th>
-
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -292,6 +293,8 @@
                                         <tr>
 
                                             <td><%= i+1%></td>
+                                            <td><% let p= new Date(user.createdAt)%><%= p.getDate()+'/'+ p.getMonth()+'/'+p.getFullYear()%>
+                                            </td>
                                             <td><%=capitalize(user.client[0].fname)+' '+capitalize(user.client[0].lname)%>
                                             </td>
                                             <td><%= 0+user.client[0].phone%></td>
@@ -308,8 +311,14 @@
                                             <td> <%if(user.status=='pending'){%><span
                                                     class="badge bg-yellow">Pending</span><%}else{%><span
                                                     class="badge bg-green">Confirmed</span><%}%></td>
+<%if(user.status=='pending'){%>
+                                            <td><button type="button"
+                                                    class="launchModal btn btn-block btn-xs btn-primary"
+                                                    data-toggle="modal" data-id="<%user._id%>" data-target="
+                                                    #modal-warning"">Confirm</button>
+                                            </td>
 
-                                            
+                                            <%}%>
                                         </tr>
 
                                         <% }) %>
@@ -317,7 +326,7 @@
 
                                 </table>
 
-                                <table id="example2" class="table table-bordered table-hover">
+                                <table id=" example2" class="table table-bordered table-hover">
 
                                 </table>
                             </div>
@@ -326,6 +335,27 @@
                     </div>
                 </div>
             </section>
+            <div class="modal modal-warning fade" id="modal-warning">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Warning !!</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>You are about to confirm a booking Ticket. Note that the
+                                action is unreversable.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-outline">Confirm</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
@@ -572,58 +602,73 @@
     <script src="/scripts/socket.js"></script>
     <!--initialize table-->
     <script>
-        $(document).ready(function () {
-            // $('#users').DataTable();
-            if (screen.width < 600) {
-                var table = $('#users').DataTable({
-                    "scrollX": true, dom: 'Bfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ]
-                });
-            } else {
-                var table = $('#users').DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ]
-                });
-            }
-            $('.type').change(function () {
-                table.column(1).search(this.value).draw();
-            })
-            $('input').iCheck({
-                checkboxClass: 'icheckbox_square-blue',
-                radioClass: 'iradio_square-blue',
-                increaseArea: '20%' // optional
-            });
-            $('.type').on('ifChecked', function (event) {
-
-                table.column(1).search(this.value).draw();
-                // $('.type2').iCheck('uncheck');
-                // $('.type3').iCheck('uncheck');
-            });
-            $('.type2').on('ifChecked', function (event) {
-
-                table.column(4).search(this.value).draw();
-                // $('.type').iCheck('uncheck');
-                // $('.type3').iCheck('uncheck');
-            });
-            $('.type3').on('ifChecked', function (event) {
-
-                table.column(3).search(this.value).draw();
-                // $('.type2').iCheck('uncheck');
-                // $('.type1').iCheck('uncheck');
-            });
-            $('#resetB').click(function () {
-                table.column(3).search('').draw();
-                table.column(4).search('').draw();
-                table.column(1).search('').draw();
-                $('.type3').iCheck('uncheck');
-                $('.type2').iCheck('uncheck');
-                $('.type').iCheck('uncheck');
-            });
+        document.querySelector('launchModal').addEventListener('click', () => {
+            console.log('clicked')
         });
+        // const doIt = (e) => {
+        //     let attribute = 'id';
+        //     let $target = $(e.target);
+
+        //     var modalSelector = $target.data('target');
+        //     var $modalAttribute = $(modalSelector + ' #modal-' + attribute);
+        //     var dataValue = $target.data(attribute);
+        //     console.log('Data value', dataValue);
+        //     $modalAttribute.text(dataValue)
+        // }
+        // $(document).ready(function () {
+
+
+        //     // $('#users').DataTable();
+        //     if (screen.width < 600) {
+        //         var table = $('#users').DataTable({
+        //             "scrollX": true, dom: 'Bfrtip',
+        //             buttons: [
+        //                 'copy', 'csv', 'excel', 'pdf', 'print'
+        //             ]
+        //         });
+        //     } else {
+        //         var table = $('#users').DataTable({
+        //             dom: 'Bfrtip',
+        //             buttons: [
+        //                 'copy', 'csv', 'excel', 'pdf', 'print'
+        //             ]
+        //         });
+        //     }
+        //     $('.type').change(function () {
+        //         table.column(1).search(this.value).draw();
+        //     })
+        //     $('input').iCheck({
+        //         checkboxClass: 'icheckbox_square-blue',
+        //         radioClass: 'iradio_square-blue',
+        //         increaseArea: '20%' // optional
+        //     });
+        //     $('.type').on('ifChecked', function (event) {
+
+        //         table.column(1).search(this.value).draw();
+        //         // $('.type2').iCheck('uncheck');
+        //         // $('.type3').iCheck('uncheck');
+        //     });
+        //     $('.type2').on('ifChecked', function (event) {
+
+        //         table.column(4).search(this.value).draw();
+        //         // $('.type').iCheck('uncheck');
+        //         // $('.type3').iCheck('uncheck');
+        //     });
+        //     $('.type3').on('ifChecked', function (event) {
+
+        //         table.column(3).search(this.value).draw();
+        //         // $('.type2').iCheck('uncheck');
+        //         // $('.type1').iCheck('uncheck');
+        //     });
+        //     $('#resetB').click(function () {
+        //         table.column(3).search('').draw();
+        //         table.column(4).search('').draw();
+        //         table.column(1).search('').draw();
+        //         $('.type3').iCheck('uncheck');
+        //         $('.type2').iCheck('uncheck');
+        //         $('.type').iCheck('uncheck');
+        //     });
+        // });
     </script>
 </body>
 

@@ -67,17 +67,18 @@ middlewareObj.sendEmail = async ({ message, subject, receiver }, req, res) => {
 
 }
 middlewareObj.isAdmin = function (req, res, next) {
-    if (req.user.role === 'admin' || 'master-admin') {
+    //  console.log('At this', req.user);
+    if (req.user.role == 'admin' || req.user.role == 'master-admin') {
         return next();
     } else {
-        logger.infoLog.info(req.user.username + " has just tried to access post-House Route ::" + "\x1b[31m" + " Access Denied!" + "\x1b[0m");
+        logger.infoLog.info(req.user.username + " has just tried to access unauthorized Route ::" + "\x1b[31m" + " Access Denied!" + "\x1b[0m");
 
         req.flash("error", "You are not privilegded to access this route!")
         res.redirect("back");
     }
 }
 middlewareObj.isMasterAdmin = function (req, res, next) {
-    if (req.user.role === 'master-admin') {
+    if (req.user.role == 'master-admin') {
         return next();
     } else {
         logger.infoLog.info(req.user.username + " has just tried to access unauthorized route ::" + "\x1b[31m" + " Access Denied!" + "\x1b[0m");
@@ -88,7 +89,9 @@ middlewareObj.isMasterAdmin = function (req, res, next) {
 }
 
 middlewareObj.isClient = function (req, res, next) {
-    if (req.user.role === 'client') {
+    // console.log('Role', req.user.role)
+
+    if (req.user.role == 'client') {
         return next();
     } else {
         logger.infoLog.info(req.user.username + " has just tried to access post-House Route ::" + "\x1b[31m" + " Access Denied!" + "\x1b[0m");
