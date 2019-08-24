@@ -34,17 +34,15 @@ var server = require('http').createServer(app);
 var indexRoutes = require("./routes/index");
 var authRoutes = require("./routes/auth");
 
-mongoose.promise = global.Promise;
-mongoose.set("useCreateIndex", true);
-mongoose.connect(
-  "mongodb+srv://sysdev:12345678@@cluster0-bpv3h.mongodb.net/test?retryWrites=true&w=majority",
-  { useNewUrlParser: true }
-);
+mongoose.set('useCreateIndex', true)
+mongoose.connect("mongodb://admin:123456K@ds151554.mlab.com:51554/benita",{ useNewUrlParser: true });
+
+useMongoClient: true 
 useMongoClient: true;
 const publicPath = path.join(__dirname, './public');
 
 app.use(require("express-session")({
-  secret: "The housing app",
+  secret: "Benita",
   resave: false,
   resave: false,
   rolling: true,
@@ -53,7 +51,7 @@ app.use(require("express-session")({
     maxAge: 60 * 60 * 1000,
 
   },
-  store: new MongoStore({ url: "mongodb+srv://sysdev:12345678@@cluster0-bpv3h.mongodb.net/test?retryWrites=true&w=majority" })
+  store: new MongoStore({ url: "mongodb://admin:123456K@ds151554.mlab.com:51554/benita" })
 
 }));
 //for displaying error
