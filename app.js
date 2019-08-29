@@ -39,7 +39,7 @@ mongoose.connect("mongodb://admin:123456K@ds151554.mlab.com:51554/benita",{ useN
 
 useMongoClient: true 
 useMongoClient: true;
-const publicPath = path.join(__dirname, './public');
+const publicPath = path.join(__dirname, '/public');
 
 app.use(require("express-session")({
   secret: "Benita",

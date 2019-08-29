@@ -133,7 +133,7 @@ router.get('/admin', Middleware.isLoggedIn, Middleware.isAdmin, async (req, res)
             from: "packages",
             let: { userId: "$packageId" },
             pipeline: [
-                { $addFields: { userId: { $toObjectId: "$userId" } } },
+                { $addFields: { userId:'$userId'  } },
                 { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
                 { $project: { name: 1, price: 1, loc: 1 } }
             ],
@@ -144,7 +144,7 @@ router.get('/admin', Middleware.isLoggedIn, Middleware.isAdmin, async (req, res)
             from: "users",
             let: { userId: "$clientId" },
             pipeline: [
-                { $addFields: { userId: { $toObjectId: "$userId" } } },
+                { $addFields: { userId:  "$userId"  } },
                 { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
                 { $project: { fname: 1, lname: 1, phone: 1 } }
             ],
@@ -173,7 +173,7 @@ router.get('/client', Middleware.isLoggedIn, Middleware.isClient, async (req, re
             from: "packages",
             let: { userId: "$packageId" },
             pipeline: [
-                { $addFields: { userId: { $toObjectId: "$userId" } } },
+                { $addFields: { userId:  "$userId"  } },
                 { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
                 { $project: { name: 1, price: 1, loc: 1 } }
             ],
@@ -373,7 +373,7 @@ router.get('/my_bookings', Middleware.isLoggedIn, (req, res) => {
             from: "packages",
             let: { userId: "$packageId" },
             pipeline: [
-                { $addFields: { userId: { $toObjectId: "$userId" } } },
+                { $addFields: { userId: "$userId"  } },
                 { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
                 { $project: { name: 1, price: 1, loc: 1 } }
             ],
@@ -384,7 +384,7 @@ router.get('/my_bookings', Middleware.isLoggedIn, (req, res) => {
             from: "users",
             let: { userId: "$clientId" },
             pipeline: [
-                { $addFields: { userId: { $toObjectId: "$userId" } } },
+                { $addFields: { userId:  "$userId"  } },
                 { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
                 { $project: { fname: 1, lname: 1, phone: 1 } }
             ],
@@ -418,7 +418,7 @@ router.get('/bookings', Middleware.isLoggedIn, Middleware.isAdmin, (req, res) =>
             from: "packages",
             let: { userId: "$packageId" },
             pipeline: [
-                { $addFields: { userId: { $toObjectId: "$userId" } } },
+                { $addFields: { userId: "$userId"  } },
                 { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
                 { $project: { name: 1, price: 1, loc: 1 } }
             ],
@@ -429,7 +429,7 @@ router.get('/bookings', Middleware.isLoggedIn, Middleware.isAdmin, (req, res) =>
             from: "users",
             let: { userId: "$clientId" },
             pipeline: [
-                { $addFields: { userId: { $toObjectId: "$userId" } } },
+                { $addFields: { userId: "$userId"  } },
                 { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
                 { $project: { fname: 1, lname: 1, phone: 1 } }
             ],
