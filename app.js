@@ -118,7 +118,7 @@ app.use(authRoutes);
 
 
 app.all('*', (req, res) => {
-  res.redirect("/");
+  res.redirect("/login");
 });
 server.listen(port, () => {
   console.log(`Benita-Travels iS rUnNiNg On PoRt ${port} `);
