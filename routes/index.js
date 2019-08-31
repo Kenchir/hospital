@@ -126,7 +126,9 @@ router.get('/users', Middleware.isLoggedIn, Middleware.isAdmin, async (req, res)
 router.get('/admin', Middleware.isLoggedIn, Middleware.isAdmin, async (req, res) => {
 
     let users = await User.find({ role: 'client' }).sort({ createdAt: -1 }).limit(6);
-    // let bookings= await Booking.find().sort({createdAt:-1}).limit(6);
+     let complaints= await Message.find({status:'unread',type:'complaint'});
+	let inquiry=await Message.find({status:'unread',type:'inquiry'});
+	console.log('Complaint',complaints.length)
     let packages = await Package.find().sort({ createdAt: -1 }).limit(6);
     let aggregate = Booking.aggregate([{ $sort: { createdAt: -1 } }, { $limit: 6 }])
         .lookup({
@@ -159,7 +161,7 @@ router.get('/admin', Middleware.isLoggedIn, Middleware.isAdmin, async (req, res)
     };
     let bookings = await Booking.aggregatePaginate(aggregate, options)
     console.log(bookings.docs.length)
-    res.render('index', { packages: packages, bookings: bookings.docs, users: users });
+    res.render('index', { packages: packages, bookings: bookings.docs, users: users,complaints:complaints,inquiry:inquiry  });
 
     // console.log(data)
 
@@ -184,7 +186,7 @@ router.get('/client', Middleware.isLoggedIn, Middleware.isClient, async (req, re
     const options = {};
 
     let bookings = await Booking.aggregatePaginate(aggregate, options)
-    res.render('index', { packages: packages, bookings: bookings.docs });
+    res.render('index', { packages: packages, bookings: bookings.docs});
 })
 router.get('/add_packages', Middleware.isLoggedIn, Middleware.isAdmin, (req, res) => {
 
@@ -401,12 +403,12 @@ router.get('/my_bookings', Middleware.isLoggedIn, (req, res) => {
             console.log('[docs]', result.docs);
 
 
-            res.render('myBookings', { data: result.docs })
+            res.render('mybookings', { data: result.docs })
         })
 
 
 })
-router.get('/bookings', Middleware.isLoggedIn, Middleware.isAdmin, (req, res) => {
+router.get('/bookings', Middleware.isLoggedIn, Middleware.isAdmin, async(req, res) => {
     const { user } = req;
 
 
@@ -453,16 +455,38 @@ router.get('/bookings', Middleware.isLoggedIn, Middleware.isAdmin, (req, res) =>
 })
 //let pictures=upload.single('image');
 
-
-
-
-router.get('/complains', Middleware.isLoggedIn, Middleware.isClient, (req, res) => {
-    res.render('clientComplains')
+router.get('/booking/confirm/:id',Middleware.isLoggedIn,Middleware.isAdmin,async(req,res)=>{
+	await Booking.findOneAndModify({_id:req.params.id},{status:'confirmed'},{new:true})
+	res.redirect('back')
 });
 
-router.post('/complains', Middleware.isLoggedIn, (req, res) => {
+
+
+router.get('/complains', Middleware.isLoggedIn, Middleware.isClient, async(req, res) => {
+	let msgs= await Message.find({from:req.user._id,type:'complaint'}).sort({createdAt:1});
+	console.log(msgs)
+    res.render('clientComplains',{msgs:msgs})
+});
+
+router.post('/complainspost', Middleware.isLoggedIn, (req, res) => {
     const { user, body } = req;
-    console.log(body)
+	if(!body.msg){
+		return res.redirect('back');
+	}
+    let msg={
+		from:user._id,
+		type:'complaint',
+		msg:body.msg	
+	}
+	msg=new Message({...msg});
+	msg.save()
+	.then(data=>{
+		req.flash('success','Complaint sent successfully')
+		res.redirect('back')
+	})
+	.catch(err=>{
+		console.log(err)
+	})	
 
 });
 router.post("/upload", Middleware.isLoggedIn, upload.array('images'), async (req, res, next) => {

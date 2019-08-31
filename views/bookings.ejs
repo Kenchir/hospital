@@ -312,10 +312,9 @@
                                                     class="badge bg-yellow">Pending</span><%}else{%><span
                                                     class="badge bg-green">Confirmed</span><%}%></td>
 <%if(user.status=='pending'){%>
-                                            <td><button type="button"
-                                                    class="launchModal btn btn-block btn-xs btn-primary"
-                                                    data-toggle="modal" data-id="<%user._id%>" data-target="
-                                                    #modal-warning"">Confirm</button>
+                                            <td><a href="/booking/confirm/<%=user._id%>"
+                                                    class="btn btn-block btn-xs btn-primary"
+                                                    >Confirm</a>
                                             </td>
 
                                             <%}%>

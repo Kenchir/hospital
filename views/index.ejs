@@ -79,36 +79,44 @@
                         <!-- Messages: style can be found in dropdown.less-->
 
                         <!-- Notifications: style can be found in dropdown.less -->
+						<%if(currentUser.role!='client'){%>
                         <li class="dropdown notifications-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-bell-o"></i>
-                                <span class="label label-warning notifNo"></span>
+                                <span class="label label-warning notifNo"><%=inquiry.length + complaints.length%></span>
                             </a>
                             <ul class="dropdown-menu">
+								<%if((complaints.length==0 )&&(inquiry.length==0)){ %>
                                 <li class="header">You have <span class="notifNo">0</span> notifications</li>
+									<%}else{%>
                                 <li>
+									
                                     <!-- inner menu: contains the actual data -->
                                     <ul class="menu" id="last5">
-
-                                        <!--<li>-->
-                                        <!--  <a href="/admins">-->
-                                        <!--    <i class="fa fa-users text-red"></i><span id="newAdmin"> 5</span> new admins have registered.-->
-                                        <!--  </a>-->
-                                        <!--</li>-->
-                                        <!--<li>-->
-                                        <!--  <a href="/reports">-->
-                                        <!--    <i class="fa fa-files-o text-green"></i> <span id="newReport"> 5</span> new reports.-->
-                                        <!--  </a>-->
-                                        <!--</li>-->
+      <%if(complaints.length>0){%>
+                                        <li>
+                                         <a href="/rescomplains">
+                                           <i class="fa fa-users text-red"></i><span id="newAdmin"> <%=complaints.length%></span> new complains.
+                                         </a>
+                                        </li>
+										<%}%>
+										 <%if(inquiry.length>0){%>
+                                        <li>
+                                         <a href="/inquiries">
+                                           <i class="fa fa-files-o text-green"></i> <span id="newReport"> <%=inquiry.length%></span> new inquiries.
+                                         </a>
+                                        </li>
+										<%}%>
 
 
 
                                     </ul>
                                 </li>
-                                <li class="footer"><a href="/notifications">Open Notifications</a></li>
+								<%}%>
+                                <!-- <li class="footer"><a href="/notifications">Open Notifications</a></li> -->
                             </ul>
                         </li>
-
+<%}%>
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -633,7 +641,7 @@
                             </div>
                             <!-- /.box-body -->
                             <div class="box-footer clearfix">
-<%if(currentUser.role=='client'){%>
+<%if(currentUser.role!='client'){%>
                     <a href="/bookings" class="btn btn-sm btn-info btn-flat pull-right">View All
                         Bookings</a>
                     <%}else{%>
