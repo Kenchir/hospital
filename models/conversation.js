@@ -3,11 +3,18 @@ const mongoose = require('mongoose'),
 
 // Schema defines how chat messages will be stored in MongoDB
 const ConversationSchema = new Schema({  
-  id:String,
-  party1:String,
-  party2:String,
+  //id:String,
+  clientId:{
+	  type: Schema.Types.ObjectId,
+       ref: 'Users'
+  },
 
-  lastActivity:Number,
-});
+}, { timestamps: true });
+ConversationSchema.methods.toJSON = () => {
+    return {
+        createdAt: this.createdAt,
+        updatedAt: this.updatedAt,
+    }
+};
 
 module.exports = mongoose.model('Conversation', ConversationSchema);  

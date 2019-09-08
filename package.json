@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
- "scripts": {
-    "start": "node app.js"
-}
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kenchir/Benita.git"
@@ -38,7 +38,6 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^5.0.1",
-    "socket.io": "^2.2.0",
     "winston": "^3.2.1",
     "xoauth2": "^1.2.0"
   }

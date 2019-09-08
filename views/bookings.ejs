@@ -312,9 +312,13 @@
                                                     class="badge bg-yellow">Pending</span><%}else{%><span
                                                     class="badge bg-green">Confirmed</span><%}%></td>
 <%if(user.status=='pending'){%>
-                                            <td><a href="/booking/confirm/<%=user._id%>"
-                                                    class="btn btn-block btn-xs btn-primary"
-                                                    >Confirm</a>
+                                            <td>
+												<form action='/confirm/<%=user._id%>' method='post'>
+													
+													
+												<input type='submit' value='Confirm' class="btn btn-block btn-xs btn-primary"
+>
+												</form>
                                             </td>
 
                                             <%}%>
