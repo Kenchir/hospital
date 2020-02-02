@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Hospital | </title>
+    <title>Hospital |Staff </title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -155,90 +155,82 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
+                    <% if(currentUser.role=="doctor"){ %>
                     <li class=" ">
-                        <a href="/admin">
+                        <a href="#">
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
-
-                    <li class="">
-                        <a href="/packages">
-                            <i class="fa fa-inbox"></i>
-                            <span>View packages</span>
-                            <span class="pull-right-container">
-
-                            </span>
-                        </a>
-
-                    </li>
-                    <% if(currentUser.role=="client"){ %>
+                
+                
                     <li>
-                        <a href="/my_bookings">
-                            <i class="fa  fa-briefcase"></i>
-                            <span>My Bookings</span>
-                            <span class="pull-right-container">
-                            </span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="/book">
+                        <a href="/complains">
                             <i class="fa fa-cart-plus"></i>
-                            <span>Book Travel</span>
+                            <span>Complaints</span>
                             <span class="pull-right-container">
                             </span>
                         </a>
                     </li>
-
-                    <% } %>
-                    <% if(currentUser.role=="master-admin"){ %>
+                
+                    <% }else{ %>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <%}%>
+                                            <li class="">
+                                                <a href="/patients">
+                                                    <i class="fa fa-inbox"></i>
+                                                    <span>View Patients</span>
+                                                    <span class="pull-right-container">
+                        
+                                                    </span>
+                                                </a>
+                        
+                                            </li>
+                                            
+                                            <% if(currentUser.role=="admin"){ %>
                     <li>
                         <a href="/add_admin">
                             <i class="fa fa-plus-square"></i>
-                            <span>Add Admin</span>
+                            <span>Add Staff</span>
                             <span class="pull-right-container">
                             </span>
                         </a>
                     </li>
-
-                    <li>
-                        <a href="/admins">
-                            <i class=" fa fa-users"></i>
-                            <span>Admins</span>
-                            <span class="pull-right-container">
-                            </span>
-                        </a>
-                    </li>
-
-                    <% } %>
-                    <% if((currentUser.role==='master-admin')||(currentUser.role==='admin')){%>
-                    <li>
-                        <a href="/bookings">
-                            <i class="fa  fa-briefcase"></i>
-                            <span>Bookings</span>
-                            <span class="pull-right-container">
-                            </span>
-                        </a>
-                    </li>
-                    <li class="active">
+                
+                    <li class="active ">
                         <a href="#">
+                            <i class=" fa fa-users"></i>
+                            <span>Staff Members</span>
+                            <span class="pull-right-container">
+                            </span>
+                        </a>
+                    </li>
+                
+                    <% } %>
+                    <% if((currentUser.role==="master-admin")||(currentUser.role==="admin")){%>
+                    <li>
+                        <a href="/users">
                             <!--<i class=""></i>-->
                             <i class=" ion ion-ios-people-outline"></i>
-                            <span>Patients</span>
+                            <span>Users</span>
                             <span class="pull-right-container">
                             </span>
                         </a>
                     </li>
                     <li class="">
-                        <a href="/reg_patients">
+                        <a href="/register_patient">
                             <i class="fa fa-inbox"></i>
-                            <span>Add patient</span>
+                            <span>Add Patient</span>
                             <span class="pull-right-container">
-
+                
                             </span>
                         </a>
-
+                
                     </li>
+                
                     <% }%>
                 </ul>
             </section>
@@ -284,8 +276,8 @@
                                             <th>Name</th>
                                             <th>Phone</th>
                                             <th>Email</th>
-<th>Gender</th>
-                                            <th>Citizenship</th>
+
+                                            <th>Role</th>
                                             <th></th>
 
                                         </tr>
@@ -298,9 +290,8 @@
                                             <td><%=capitalize(user.fname)+' '+ capitalize(user.lname)%></td>
                                             <td><%=user.phone%></td>
                                             <td> <%=user.email%> </td>
-                                            <td><%=user.gender%></td>
-<td><%=user.citizenhip%></td>
-<td><a href="/patient/<%=user._id%>">View More</a></td>
+                                            <td><%=user.role%></td>
+
                                         </tr>
 
                                         <% }) %>

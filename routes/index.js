@@ -327,8 +327,18 @@ router.get("/patient/:id", (req, res) => {
       res.redirect("back");
     });
 });
-router.get("/ss", (req, res) => {
-  res.render("successfulPatientReg");
+router.get("/staff", (req, res) => {
+  User.find({})
+    .then(data => {
+      if (data) {
+        // console.log(data)
+        res.render("users", { users: data });
+      }
+    })
+    .catch(err => {
+      req.flash("error", err);
+      res.redirect("back");
+    });
 });
 //let pictures=upload.single('image');
 

@@ -168,10 +168,10 @@ router.post("/register", async (req, res, next) => {
 
 });
 
-router.get("/add_admin", middleware.isLoggedIn, middleware.isMasterAdmin, (req, res) => {
+router.get("/add_admin", middleware.isLoggedIn, middleware.isAdmin, (req, res) => {
     res.render("add_admin");
 });
-router.post('/add_admin', middleware.isLoggedIn, middleware.isMasterAdmin, async (req, res) => {
+router.post('/add_admin', middleware.isLoggedIn, middleware.isAdmin, async (req, res) => {
     var token = crypto.randomBytes(25).toString('hex');
     crypto.randomBytes(20, function (err, buf) {
         token = buf.toString('hex');
@@ -181,7 +181,7 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isMasterAdmin, async
     //console.log(req.body);
     //console.log("A new admin " + middleware.capitalize(req.body.fname)  +" using email: " + req.body.email + " has requested registration" + " at " + moment(moment().valueOf()).format('h:mm:a,  Do MMMM  YYYY,'));
 
-    if (!body.email || !body.fname || !body.lname) {
+    if (!body.email || !body.fname || !body.lname||!body.role) {
         req.flash("error", 'All fields must be filled');
         return res.redirect("back");
     }
@@ -191,7 +191,7 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isMasterAdmin, async
 
     var username = Lowercase(body.fname) + Math.floor(Math.random() * (+10 - +0)) + +1;
 
-    User.findOne({ email: body.email }, async (error, email) => {
+    User.findOne({ email: body.email }, async ( email) => {
         if (email) {
 
             req.flash("error", " The email you entered is already in use !");
@@ -205,7 +205,7 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isMasterAdmin, async
                 isActive: false,
                 verifyExpires: Date.now() + 3600000,
                 lname: body.lname,
-
+                role:body.role,
                 email: body.email,
                 // yearOfHire: today,
                 role: 'admin',
@@ -222,11 +222,11 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isMasterAdmin, async
                     // console.log(user);
                     logger.infoLog.info("Sending" + body.fname + " email for account completion setup  ");
                     const infoToSend = {
-                        message: 'Hello \b' + user.fname + '\b' + '\n\n' + 'You are receiving this  from Benita Travelsil that you have been added as an Admin. Complete by  setting up your password for the account' + '\n\n' +
+                        message: 'Hello \b' + user.fname + '\b' + '\n\n' + 'You are receiving this  from Ubunifu Hospital that you have been added as '+user.role+'. Complete by  setting up your password for the account' + '\n\n' +
                             'Click on the link or paste it into your browser to go on.' + '\n\n' + ' Your Username:\b' + username + '\b' + '\n\n' +
                             'http://' + req.headers.host + '/confirmaccount/' + user.verifyToken + '\n\n' +
-                            'Welcome to Benita Travels',
-                        subject: 'Admin registration',
+                            'Welcome to Ubunifu Hospital',
+                        subject: 'Staff registration',
                         receiver: body.email
                     }
                     const smtpTransport = await Nodemailer.createTransport({

@@ -10,7 +10,14 @@ var UserSchema = new mongoose.Schema(
     email: { type: String, unique: true },
     role: {
       type: String,
-      enum: ["admin", "receptionist", "nurse", "doctor", "labTech", "pharmacy"],
+      enum: [
+        "admin",
+        "receptionist",
+        "nurse",
+        "doctor",
+        "labTech",
+        "pharmacist"
+      ],
       default: "nurse"
     },
     phone: { type: Number },

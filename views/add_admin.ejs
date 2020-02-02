@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Benita | Add admin</title>
+  <title>Ubunifu Hospital| Add staff</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -158,43 +158,62 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
           <li class="header">MAIN NAVIGATION</li>
+          <% if(currentUser.role=="doctor"){ %>
           <li class=" ">
-            <a href="/">
+            <a href="#">
               <i class="fa fa-dashboard"></i> <span>Dashboard</span>
             </a>
           </li>
-
+        
+        
           <li>
-            <a href="/packages">
-              <i class="fa fa-inbox"></i>
-              <span>View packages</span>
+            <a href="/complains">
+              <i class="fa fa-cart-plus"></i>
+              <span>Complaints</span>
               <span class="pull-right-container">
-
               </span>
             </a>
-
           </li>
-          <% if(currentUser.role=="master-admin"){ %>
-          <li class="active">
+        
+          <% }else{ %>
+          <li class="active ">
             <a href="#">
+              <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+            </a>
+          </li>
+          <%}%>
+                            <li class="">
+                                <a href="/patients">
+                                    <i class="fa fa-inbox"></i>
+                                    <span>View Patients</span>
+                                    <span class="pull-right-container">
+        
+                                    </span>
+                                </a>
+        
+                            </li>
+                            
+                            <% if(currentUser.role=="admin"){ %>
+          <li class="active">
+            <a href="/add_admin">
               <i class="fa fa-plus-square"></i>
-              <span>Add Admin</span>
+              <span>Add Staff</span>
               <span class="pull-right-container">
               </span>
             </a>
           </li>
-
+        
           <li>
-            <a href="/admins">
+            <a href="/staff">
               <i class=" fa fa-users"></i>
-              <span>Admins</span>
+              <span>Staff Members</span>
               <span class="pull-right-container">
               </span>
             </a>
           </li>
-
+        
           <% } %>
-          <% if((currentUser.role==='master-admin')||(currentUser.role==='admin')){%>
+          <% if((currentUser.role==="master-admin")||(currentUser.role==="admin")){%>
           <li>
             <a href="/users">
               <!--<i class=""></i>-->
@@ -205,15 +224,16 @@
             </a>
           </li>
           <li class="">
-            <a href="/packages">
+            <a href="/register_patient">
               <i class="fa fa-inbox"></i>
-              <span>Add package</span>
+              <span>Add Patient</span>
               <span class="pull-right-container">
-
+        
               </span>
             </a>
-
+        
           </li>
+        
           <% }%>
         </ul>
       </section>
@@ -227,12 +247,12 @@
 
       <section class="content-header">
         <h1>
-          Add New Admin
+          Add New staff
           <!--<small>Version 2.0</small>-->
         </h1>
         <ol class="breadcrumb">
           <li><a href="/"><i class="fa fa-dashboard"></i> Admin</a></li>
-          <li class="active">Add Administarators</li>
+          <li class="active">Add staff</li>
         </ol>
       </section>
 
@@ -274,7 +294,41 @@
                     <input type="text" name="lname" class="form-control" id="exampleInputPassword1"
                       placeholder="Second Name">
                   </div>
-
+                    <div class="form-group">
+                    
+                      <label for="exampleInputPassword1">Role:</label>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="role" value="doctor" >
+                          Doctor
+                        </label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="role" value="nurse" >
+                          Nurse
+                        </label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="role" value="receptionist" >
+                          Resptionist
+                        </label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="role" value="labTech">
+                          Lab Technician
+                        </label>
+                      </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="role" value="pharmacist" >
+                        Pharmacist
+                      </label>
+                    </div>
+                    
+                    </div>
 
 
                   <!-- /.box-body -->
@@ -299,7 +353,7 @@
       <div class="pull-right hidden-xs">
         <b>Version</b> 2.4.0
       </div>
-      <strong>Copyright &copy; 2019<a href="#"> Benita Travels</a>.</strong> All rights
+      <strong>Copyright &copy; 2019<a href="#"> Ubunifu Hospital</a>.</strong> All rights
       reserved.
     </footer>
 

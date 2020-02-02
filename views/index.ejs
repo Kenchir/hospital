@@ -246,20 +246,13 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
-                    <% if(currentUser.role=="client"){ %>
+                    <% if(currentUser.role=="doctor"){ %>
                     <li class="active ">
                         <a href="#">
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="/my_bookings">
-                            <i class="fa  fa-briefcase"></i>
-                            <span>My Bookings</span>
-                            <span class="pull-right-container">
-                            </span>
-                        </a>
-                    </li>
+                   
 
                     <li>
                         <a href="/complains">
@@ -280,7 +273,7 @@
                     <li class="">
                         <a href="/patients">
                             <i class="fa fa-inbox"></i>
-                            <span>View packages</span>
+                            <span>View Patients</span>
                             <span class="pull-right-container">
 
                             </span>
@@ -288,20 +281,20 @@
 
                     </li>
                     
-                    <% if(currentUser.role=="master-admin"){ %>
+                    <% if(currentUser.role=="admin"){ %>
                     <li>
                         <a href="/add_admin">
                             <i class="fa fa-plus-square"></i>
-                            <span>Add Admin</span>
+                            <span>Add Staff</span>
                             <span class="pull-right-container">
                             </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="/admins">
+                        <a href="/staff">
                             <i class=" fa fa-users"></i>
-                            <span>Admins</span>
+                            <span>Staff Members</span>
                             <span class="pull-right-container">
                             </span>
                         </a>
@@ -328,14 +321,7 @@
                         </a>
 
                     </li>
-                    <li>
-                        <a href="/bookings">
-                            <i class="fa  fa-briefcase"></i>
-                            <span>Bookings</span>
-                            <span class="pull-right-container">
-                            </span>
-                        </a>
-                    </li>
+                   
                     <% }%>
                 </ul>
             </section>
