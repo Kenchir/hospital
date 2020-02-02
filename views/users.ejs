@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Benita | Packages</title>
+    <title>Hospital | </title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -47,9 +47,9 @@
             <!-- Logo -->
             <a href="#" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>Benita</b></span>
+                <span class="logo-mini"><b>Hospital</b></span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b> Benita Travels</b></span>
+                <span class="logo-lg"><b> </b></span>
             </a>
 
             <!-- Header Navbar: style can be found in header.less -->
@@ -224,15 +224,15 @@
                         <a href="#">
                             <!--<i class=""></i>-->
                             <i class=" ion ion-ios-people-outline"></i>
-                            <span>Users</span>
+                            <span>Patients</span>
                             <span class="pull-right-container">
                             </span>
                         </a>
                     </li>
                     <li class="">
-                        <a href="/packages">
+                        <a href="/reg_patients">
                             <i class="fa fa-inbox"></i>
-                            <span>Add package</span>
+                            <span>Add patient</span>
                             <span class="pull-right-container">
 
                             </span>
@@ -284,8 +284,8 @@
                                             <th>Name</th>
                                             <th>Phone</th>
                                             <th>Email</th>
-
-                                            <th>No of Booking Made</th>
+<th>Gender</th>
+                                            <th>Citizenship</th>
                                             <th></th>
 
                                         </tr>
@@ -298,8 +298,9 @@
                                             <td><%=capitalize(user.fname)+' '+ capitalize(user.lname)%></td>
                                             <td><%=user.phone%></td>
                                             <td> <%=user.email%> </td>
-                                            <td><%=user.bookings.length%></td>
-
+                                            <td><%=user.gender%></td>
+<td><%=user.citizenhip%></td>
+<td><a href="/patient/<%=user._id%>">View More</a></td>
                                         </tr>
 
                                         <% }) %>

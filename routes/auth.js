@@ -29,12 +29,6 @@ const multer = require('multer');
 const cloudinary = require('cloudinary');
 const xoauth2 = require("xoauth2");
 
-//cloudinary config
-cloudinary.config({
-    cloud_name: 'devteamke',
-    api_key: 442155129588629,
-    api_secret: "ylF7sUCL0j1cb9rt0Khgk6inG_s"
-});
 
 var storage = multer.diskStorage({
     filename: function (req, file, callback) {
@@ -61,6 +55,7 @@ router.post("/login", passport.authenticate("local", { failureFlash: "Sorry, Wro
     logger.infoLog.info(middleware.capitalize(req.user.username) + " has just logged in " + " at " + moment(moment().valueOf()).format('h:mm:a,  Do MMMM  YYYY,,'))
 
     if ((req.user.role == 'admin') && (req.user.isActive == false)) {
+        console.log("Wrong pass")
         req.flash('error', 'Your Account has  been suspended.  Contact your admin.')
         res.redirect('back');
         delete req.session.returnTo;
@@ -104,7 +99,7 @@ router.post("/register", async (req, res, next) => {
     //console.log(req.body);
     let token = crypto.randomBytes(25).toString('hex');
     logger.infoLog.info("User registration request received from " + middleware.capitalize(req.body.fname));
-    console.log(req.body);
+    
     logger.infoLog.info("Name: " + middleware.capitalize(req.body.fname) + "email: " + req.body.email + " has requested registration" + " at " + moment(moment().valueOf()).format('h:mm:a,  Do MMMM  YYYY,'));
     let isValid = SignUp.validate({
         uname: req.body.uname,
@@ -131,6 +126,7 @@ router.post("/register", async (req, res, next) => {
     }
     User.findOne({ email: isValid.value.email }, (error, email) => {
         if (email) {
+            console.log(email)
             req.flash("error", " The email you entered is already in use !");
             res.redirect("back");
         }
@@ -162,65 +158,10 @@ router.post("/register", async (req, res, next) => {
                     req.flash("error", err.message);
                     res.redirect("register");
                 } else {
-                    //   console.log(user)
-                    //return
-                    //req.flash("success","New admin has added successful.")
-                    //logger.infoLog.info(isValid.value.fname + " has requested for registration");
-                    //console.log(token);
-                    //  Notify.create({body:' A new admin has just registered',
-                    //                 type:'new_admin',
-                    //                 ref_id:user._id
-
-                    //   },(err,notification)=>{
-                    //      req.io.sockets.to('masterRoom').emit('new-report/admin', user)
-                    //  })
-                    if (user.role == 'admin') {
-                        async.waterfall([
-                            (done) => {
-                                var smtpTransport = nodemailer.createTransport({
-                                    host: 'smtp.gmail.com',
-                                    port: 465,
-                                    secure: true,
-                                    auth: {
-                                        type: 'OAuth2',
-                                        user: 'kipkogeichirchir2@gmail.com',
-                                        clientId: '719159077041-lorf8m8a343e5lvorcb30grmuivj83gj.apps.googleusercontent.com',
-                                        clientSecret: 'amUTHetZ4xgJGU8TZotQYzId',
-                                        refreshToken: '1/ApjZeSbzzalpBvpqAcF4qUetTjZsDeI8qV2J9aEsXAI'
-                                    }
-                                })
-
-                                var mailOptions = {
-                                    to: isValid.value.email,
-                                    from: 'kipkogeichirchir2@gmail.com',
-                                    subject: 'House Recommender community',
-                                    text: 'Hello \b' + user.fname + '\b' + '\n\n' + 'Your request for house-Owner registration has been received. Kindly click the link below or paste it in browser for verification' + '\n\n' +
-                                        'http://' + req.headers.host + '/confirmaccount/' + user.verifyToken + '\n\n' +
-                                        'Welcome to House Recommender'
-                                };
-                                smtpTransport.sendMail(mailOptions, (err, info) => {
-                                    if (err) {
-                                        req.flash("error", err.message);
-                                        res.redirect('back');
-                                    } else {
-                                        req.flash('success', 'Your registration was successful. A mail has been sent to your regi e-mail for verification ');
-                                        res.redirect("/login");
-
-                                    }
-                                });
-                            }
-                        ], (err) => {
-                            console.log(err);
-                        }
-                        )
-
-                    } else {
+                    
                         req.flash('success', 'Your registration was successful, You can now login');
                         res.redirect("/login");
                     }
-
-
-                }
             });
         }
     });
