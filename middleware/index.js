@@ -77,7 +77,13 @@ middlewareObj.sendEmail = async ({ message, subject, receiver }, req, res) => {
 };
 middlewareObj.isAdmin = function(req, res, next) {
   //  console.log('At this', req.user);
-  if (req.user.role == "admin" || req.user.role == "master-admin") {
+  if (
+    req.user.role == "admin" ||
+    req.user.role == "receptionist" ||
+    req.user.role == "doctor" ||
+    req.user.role == "labTech" ||
+    req.user.role == "nurse"
+  ) {
     return next();
   } else {
     logger.infoLog.info(

@@ -246,41 +246,100 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
-                    <% if(currentUser.role=="doctor"){ %>
                     <li class="active ">
                         <a href="#">
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
+                    <% if(currentUser.role=="doctor"){ %>
                    
 
                     <li>
-                        <a href="/complains">
+                        <a href="/patient_waitingdoc">
                             <i class="fa fa-cart-plus"></i>
-                            <span>Complaints</span>
+                            <span>View Patient Waiting</span>
                             <span class="pull-right-container">
                             </span>
                         </a>
                     </li>
-
-                    <% }else{ %>
-                    <li class="active ">
-                        <a href="#">
-                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+<li>
+    <a href="/patient_waitingdoc">
+        <i class="fa fa-cart-plus"></i>
+        <span>View Patient Waiting</span>
+        <span class="pull-right-container">
+        </span>
+    </a>
+</li>
+<li>
+    <a href="/patientshist">
+        <i class="fa fa-cart-plus"></i>
+        <span>Patient History</span>
+        <span class="pull-right-container">
+        </span>
+    </a>
+</li>
+                    <% }%>
+                
+                    <% if(currentUser.role=="receptionist"){ %>
+                   
+                    
+                    <li>
+                        <a href="/register_patient">
+                            <i class="fa fa-cart-plus"></i>
+                            <span>Register Patient</span>
+                            <span class="pull-right-container">
+                            </span>
                         </a>
                     </li>
-                    <%}%>
+                    <li>
+                        <a href="/start_case">
+                            <i class="fa fa-cart-plus"></i>
+                            <span>Start Case</span>
+                            <span class="pull-right-container">
+                            </span>
+                        </a>
+                    </li>
                     <li class="">
-                        <a href="/patients">
+                        <a href="/regenerate_id">
                             <i class="fa fa-inbox"></i>
                             <span>View Patients</span>
                             <span class="pull-right-container">
-
+                    
                             </span>
                         </a>
-
+                    
+                    </li>
+                    <% }else if(currentUser.role=='nurse'){%>
+                        <li>
+                            <a href="/patient_waitingnurse">
+                                <i class="fa fa-cart-plus"></i>
+                                <span>Patient Waiting</span>
+                                <span class="pull-right-container">
+                                </span>
+                            </a>
+                        </li>
+                        
+                    <%}else if(currentUser.role=='labTech'){%>
+                        <li>
+                            <a href="/patient_waitinglab">
+                                <i class="fa fa-cart-plus"></i>
+                                <span>Patient Waiting</span>
+                                <span class="pull-right-container">
+                                </span>
+                            </a>
+                        </li>
+                        
+                    <%}else if(currentUser.role=='pharmacist'){%>
+                    <li>
+                        <a href="/patient_waitingpharm">
+                            <i class="fa fa-cart-plus"></i>
+                            <span>Patient Waiting</span>
+                            <span class="pull-right-container">
+                            </span>
+                        </a>
                     </li>
                     
+                    <%}%>
                     <% if(currentUser.role=="admin"){ %>
                     <li>
                         <a href="/add_admin">
@@ -301,28 +360,7 @@
                     </li>
 
                     <% } %>
-                    <% if((currentUser.role==="master-admin")||(currentUser.role==="admin")){%>
-                    <li>
-                        <a href="/users">
-                            <!--<i class=""></i>-->
-                            <i class=" ion ion-ios-people-outline"></i>
-                            <span>Users</span>
-                            <span class="pull-right-container">
-                            </span>
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="/register_patient">
-                            <i class="fa fa-inbox"></i>
-                            <span>Add Patient</span>
-                            <span class="pull-right-container">
-
-                            </span>
-                        </a>
-
-                    </li>
                    
-                    <% }%>
                 </ul>
             </section>
             <!-- /.sidebar -->

@@ -85,7 +85,7 @@ router.get("/logout", function (req, res) {
                 logger.errorLog.error(err);
             } else {
 
-                res.redirect("/");
+                res.redirect("/login");
             }
         });
     } else {
