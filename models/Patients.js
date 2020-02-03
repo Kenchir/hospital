@@ -31,7 +31,6 @@ PatientSchema.methods.toJSON = function() {
     role: this.role,
     fname: this.fname,
     lname: this.lname,
-    username: this.username,
 
     title: this.title,
     marital: this.marital,

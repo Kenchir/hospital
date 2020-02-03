@@ -232,12 +232,12 @@
 
       <section class="content-header">
         <h1>
-          Add New Patient
+         Patient Details
           <!--<small>Version 2.0</small>-->
         </h1>
         <ol class="breadcrumb">
           <li><a href="/"><i class="fa fa-dashboard"></i> a</a></li>
-          <li class="active">Add package</li>
+          <li class="active">Patient</li>
         </ol>
       </section>
 
@@ -264,6 +264,7 @@
               <% }%>
             <section class="invoice">
       <!-- title row -->
+      <div id="id=DivIdToPrint"></div>
       <div class="row">
         <div class="col-xs-12">
           <h2 class="page-header">
@@ -280,7 +281,7 @@
         </div>
         <!-- /.col -->
         <div class="col-sm-4 invoice-col">
-          To
+          
           <address>
             <strong>Name :<%= data.fname%> <%= data.fname%></strong><br>
           Gender: <%= data.gender%><br>
@@ -293,7 +294,7 @@
         <div class="col-sm-4 invoice-col">
           <b>Citizenship: <%= data.citizenship%></b><br>
           <br>
-          <% if(data.citizeship=='kenyan'){%>
+          <% if(data.citizenship=='Kenyan'){%>
           <b>ID Number:</b> <%=data.idNumber%><br>
           <%}else{%>
           <b>Passport  Number:</b> <%=data.passportNumber%><br>
@@ -303,7 +304,7 @@
         <!-- /.col -->
       </div>
       <!-- /.row -->
-
+</div>
       <!-- Table row -->
     
       <!-- /.row -->
@@ -314,12 +315,8 @@
       <!-- this row will not appear when printing -->
       <div class="row no-print">
         <div class="col-xs-12">
-          <a href="/patient/<%=data._id%>" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Print</a>
-          <button type="button" class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment
-          </button>
-          <button type="button" class="btn btn-primary pull-right" style="margin-right: 5px;">
-            <i class="fa fa-download"></i> Generate PDF
-          </button>
+          <a href="#" target="_blank" class="btn btn-default" onclick="print()"><i class="fa fa-print"></i> Print</a>
+          
         </div>
       </div>
     </section>
@@ -338,9 +335,9 @@
 
     <footer class="main-footer">
       <div class="pull-right hidden-xs">
-        <b>Version</b> 2.4.0
+        
       </div>
-      <strong>Copyright &copy; 2019<a href="#"> Benita Travels</a>.</strong> All rights
+      <strong>Copyright &copy; 2020<a href="#"> Ubunifu Hospital</a>.</strong> All rights
       reserved.
     </footer>
 
@@ -578,34 +575,25 @@
   
   <!--initialize table-->
   <script>
-    
+ 
     $(document).ready(function () {
-      var QRCode = require('qrcode')
-      var canvas = document.getElementById('canvas')
+        const print = () => {
+        function printDiv() {
 
-      QRCode.toCanvas(canvas, 'sample text', function (error) {
-        if (error) console.error(error)
-        console.log('success!');
-      })
-      // $('#users').DataTable();
-     $('#idNum').hide();
-      $('#passport').hide();
+          var divToPrint = document.getElementById('DivIdToPrint');
 
-      $('#kenyan').click(function () {
-        $('#idNum').show();
-        $('#passport').hide();
-       
-      })
+          var newWin = window.open('', 'Print-Window');
 
-      $('#notKenyan').click(function () {
-        $('#idNum').hide();
-        $('#passport').show();
-      })
-      // $('#govt').click(function () {
-      //   $('#govtauthority').show();
-      //   $('#county').hide();
-     
-      // });
+          newWin.document.open();
+
+          newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+          newWin.document.close();
+
+          setTimeout(function () { newWin.close(); }, 10);
+
+        }
+      }
     });
   </script>
 </body>
