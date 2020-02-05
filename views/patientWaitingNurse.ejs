@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Hospital |Staff </title>
+    <title>ubunifu</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -46,9 +46,9 @@
             <!-- Logo -->
             <a href="#" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>Hospital</b></span>
+                <span class="logo-mini"><b>ubunifu</b></span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><b> </b></span>
+                <span class="logo-lg"><b> Hospital</b></span>
             </a>
 
             <!-- Header Navbar: style can be found in header.less -->
@@ -157,7 +157,7 @@
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">MAIN NAVIGATION</li>
                     <li class=" ">
-                        <a href="/admin">
+                        <a href="#">
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
@@ -288,12 +288,13 @@
                 <% }%>
                     <section class="content-header">
                         <h1>
-                            Users
+                            All Patients
                             <!--<small>Version 2.0</small>-->
                         </h1>
+                        <p>Please select Patient to start filling vitals</p>
                         <ol class="breadcrumb">
                             <li><a href="#"><i class="fa fa-dashboard"></i>Home</a></li>
-                            <li class="active">users</li>
+                            <li class="active">patients</li>
 
                         </ol>
                     </section>
@@ -308,43 +309,56 @@
 
                                         <table id="users" class="table table-bordered table-hover">
                                             <thead>
-                                                <%if(users.length>0){%>
-                                                    <tr>
-                                                        <th></th>
-                                                        <th>Name</th>
-                                                        <th>Phone</th>
-                                                        <th>Email</th>
+                                                <tr>
+                                                    <th></th>
 
-                                                        <th>Role</th>
-                                                        <th></th>
+                                                    <th>Name</th>
+                                                    <th>Phone</th>
+                                                    <th>Citizenship</th>
+                                                    <th>occupation</th>
+                                                    <th>Residence</th>
+                                                    <th></th>
 
-                                                    </tr>
+                                                </tr>
                                             </thead>
                                             <tbody>
-                                                <%users.forEach((user,i)=>{%>
+                                                <%data.forEach((user,i)=>{%>
                                                     <tr>
 
                                                         <td>
                                                             <%= i+1%>
                                                         </td>
                                                         <td>
-                                                            <%=capitalize(user.fname)+' '+ capitalize(user.lname)%>
+                                                            <%=user.fname%>
+                                                                <%=user.patient[0].lname%>
                                                         </td>
                                                         <td>
-                                                            <%=user.phone%>
+                                                            <%= '0'+user.patient[0].phone%>
+                                                        </td>
+                                                        <td> $
+                                                            <%=user.patient[0].citizenship%>
+                                                        </td>
+                                                        <td> $
+                                                            <%=user.patient[0].occupation%>
                                                         </td>
                                                         <td>
-                                                            <%=user.email%>
+                                                            <%= user.patient[0].residence%>
                                                         </td>
-                                                        <td>
-                                                            <%=user.role%>
+
+
+
+
+
+
+
+                                                        <td><a href="/vitals_input/<%=user._id%>" class="btn btn-success">Fill Vitals</a>
                                                         </td>
 
                                                     </tr>
 
                                                     <% }) %>
                                             </tbody>
-                                            <%}%>
+
                                         </table>
 
                                         <table id="example2" class="table table-bordered table-hover">
@@ -364,7 +378,7 @@
             <div class="pull-right hidden-xs">
                 <b>Version</b> 2.4.0
             </div>
-            <strong>Copyright &copy; 2018<a href="https://adminlte.io"> Dev Team Ke</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; 2018<a href="#"> ubunifu</a>.</strong> All rights reserved.
         </footer>
 
         <!-- Control Sidebar -->

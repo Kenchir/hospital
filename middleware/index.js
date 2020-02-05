@@ -19,7 +19,7 @@ middlewareObj.isLoggedIn = function(req, res, next) {
   }
   req.session.returnTo = req.path;
   req.flash("error", "Please Login first");
-  res.redirect("/");
+  res.redirect("/login");
 };
 middlewareObj.generateQRCode = (uniqueNum, email, id) => {
   console.log("recently");

@@ -20,24 +20,21 @@ const joi = require("joi");
 
 //models
 const User = require("./models/user");
-const Package = require("./models/Package");
 
-const Bookinf = require("./models/booking");
-//const Comment             =require("./models/comments");
-//other routes
 const middleware = require("./middleware");
 
 var passport = require("passport");
 var app = express();
 var server = require("http").createServer(app);
 
-var indexRoutes = require("./routes/index");
-var authRoutes = require("./routes/auth");
+const indexRoutes = require("./routes/index");
+const authRoutes = require("./routes/auth");
+const trackRoutes = require("./routes/patientTrack");
 
 mongoose.set("useCreateIndex", true);
-mongoose.connect(
-  "mongodb://localhost:27017/Hospital", { useNewUrlParser: true }
-);
+mongoose.connect("mongodb://localhost:27017/Hospital", {
+  useNewUrlParser: true
+});
 
 useMongoClient: true;
 useMongoClient: true;
@@ -56,6 +53,7 @@ app.use(
     store: new MongoStore({ url: "mongodb://localhost:27017/Hospital" })
   })
 );
+
 //for displaying error
 app.use(flash());
 app.use(passport.initialize());
@@ -68,8 +66,6 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
-
-app.use(express.static(publicPath));
 
 /*configure app to use body-parser*/
 app.use(express.static(__dirname));
@@ -105,15 +101,15 @@ app.use((req, res, next) => {
 
   next();
 });
-
 //Use routes exported from other files
 
 app.use(indexRoutes);
 app.use(authRoutes);
-
+app.use(trackRoutes);
+app.use(express.static(publicPath));
 app.all("*", (req, res) => {
   res.redirect("/login");
 });
 server.listen(port, () => {
-  console.log(`Benita-Travels iS rUnNiNg On PoRt ${port} `);
+  console.log(`Ununifu-Hospital app iS rUnNiNg On PoRt ${port} `);
 });

@@ -3,7 +3,7 @@ var router = express.Router();
 const User = require("../models/user");
 const House = require("../models/Package");
 
-const Booking = require("../models/booking");
+const Booking = require("../models/LabTestReq");
 
 // const Comment = require("../models/comments");
 // const Viewed = require("../models/houseviewed");
@@ -59,15 +59,10 @@ router.post("/login", passport.authenticate("local", { failureFlash: "Sorry, Wro
         req.flash('error', 'Your Account has  been suspended.  Contact your admin.')
         res.redirect('back');
         delete req.session.returnTo;
-    } else if (req.user.role == 'client') {
-
-        req.flash("success", "Login successful!")
-        res.redirect(req.session.returnTo || '/client');
-        delete req.session.returnTo;
     } else {
         console.log('Role', req.user.role)
 
-        req.flash("success", "Login successful!")
+        // req.flash("success", "Login successful!")
         res.redirect(req.session.returnTo || '/admin');
         delete req.session.returnTo;
     }
