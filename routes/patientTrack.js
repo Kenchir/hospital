@@ -96,6 +96,27 @@ router.post("/vitals_input/:id", async(req, res) => {
         })
 
 })
+router.get("/patient_waitingdoc", Middleware.isLoggedIn, async(req, res) => {
+    let aggregate = await PatCaseTrack.aggregate([{
+                $match: {
+                    stage: 'doc'
+                }
+            },
+            {
+                $lookup: {
+                    from: "patients",
+                    localField: "patId",
+                    foreignField: "_id",
+                    as: "patient"
+                }
+            }
+        ])
+        //  console.log(aggregate)
+    const options = {};
 
+    // const data = await PatCaseTrack.aggregatePaginate(aggregate, options);
+    //  console.log(data.docs)
+    res.render("patientwaitingdoc", { data: aggregate });
+})
 
 module.exports = router;
