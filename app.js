@@ -23,35 +23,40 @@ const User = require("./models/user");
 
 const middleware = require("./middleware");
 
-var passport = require("passport");
-var app = express();
-var server = require("http").createServer(app);
+const passport = require("passport");
+const app = express();
+const server = require("http").createServer(app);
 
 const indexRoutes = require("./routes/index");
 const authRoutes = require("./routes/auth");
 const trackRoutes = require("./routes/patientTrack");
+const assert = require('assert');
+const MongoClient = require('mongodb').MongoClient;
+const url = "mongodb+srv://admin:123@cluster0-gksqt.mongodb.net/test?retryWrites=true&w=majority";
+// const client = new MongoClient(uri, { useNewUrlParser: true });
 
+mongoose.promise = global.Promise;
 mongoose.set("useCreateIndex", true);
-mongoose.connect("mongodb://localhost:27017/Hospital", {
-  useNewUrlParser: true
-});
+mongoose.connect(
+    url,
+    { useNewUrlParser: true, useUnifiedTopology: true }
+);
+useMongoClient: true;
 
-useMongoClient: true;
-useMongoClient: true;
 const publicPath = path.join(__dirname, "/public");
 
 app.use(
-  require("express-session")({
-    secret: "Benita",
-    resave: false,
-    resave: false,
-    rolling: true,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 60 * 60 * 1000
-    },
-    store: new MongoStore({ url: "mongodb://localhost:27017/Hospital" })
-  })
+    require("express-session")({
+        secret: "Benita",
+        resave: false,
+        resave: false,
+        rolling: true,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 60 * 60 * 1000
+        },
+        store: new MongoStore({ url: url })
+    })
 );
 
 //for displaying error
@@ -59,12 +64,12 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(function(user, done) {
-  done(null, user);
+passport.serializeUser(function (user, done) {
+    done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
-  done(null, user);
+passport.deserializeUser(function (user, done) {
+    done(null, user);
 });
 
 /*configure app to use body-parser*/
@@ -75,31 +80,31 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-  //variables put in local
-  //res.locals.currentUser = req.user;
-  //log visit if user is logged in
-  // if(req.user&&(req.originalUrl!="/favicon.ico")&&(req.originalUrl!="/app/js/lib/deparam.js")){
+    //constiables put in local
+    //res.locals.currentUser = req.user;
+    //log visit if user is logged in
+    // if(req.user&&(req.originalUrl!="/favicon.ico")&&(req.originalUrl!="/app/js/lib/deparam.js")){
 
-  //     logger.infoLog.info(middleware.capitalize(req.user.username ) +" has visited " + req.originalUrl + " at" );
-  // }
-  var today = new Date();
-  var dd = today.getDate();
-  var yy = today.getFullYear();
-  var mm = today.getMonth() + 1;
-  var currentDate = yy + "-" + mm + "-" + dd;
-  res.locals.currentDate = currentDate;
-  res.locals.currentUser = req.user;
-  res.locals.error = req.flash("error");
-  res.locals.house_errors = req.flash("house_errors");
-  res.locals.success = req.flash("success");
-  res.locals.route = req.originalUrl;
-  res.locals.moment = moment;
-  res.locals.isInArray = middleware.isInArray;
-  res.locals.capitalize = middleware.capitalize;
-  res.locals.stripEndQuotes = middleware.stripEndQuotes;
-  res.locals.version = 0.01;
+    //     logger.infoLog.info(middleware.capitalize(req.user.username ) +" has visited " + req.originalUrl + " at" );
+    // }
+    const today = new Date();
+    const dd = today.getDate();
+    const yy = today.getFullYear();
+    const mm = today.getMonth() + 1;
+    const currentDate = yy + "-" + mm + "-" + dd;
+    res.locals.currentDate = currentDate;
+    res.locals.currentUser = req.user;
+    res.locals.error = req.flash("error");
+    res.locals.house_errors = req.flash("house_errors");
+    res.locals.success = req.flash("success");
+    res.locals.route = req.originalUrl;
+    res.locals.moment = moment;
+    res.locals.isInArray = middleware.isInArray;
+    res.locals.capitalize = middleware.capitalize;
+    res.locals.stripEndQuotes = middleware.stripEndQuotes;
+    res.locals.version = 0.01;
 
-  next();
+    next();
 });
 //Use routes exported from other files
 
@@ -108,8 +113,9 @@ app.use(authRoutes);
 app.use(trackRoutes);
 app.use(express.static(publicPath));
 app.all("*", (req, res) => {
-  res.redirect("/login");
+    res.redirect("/login");
 });
+app.get("/", res => res.redirect("/login"))
 server.listen(port, () => {
-  console.log(`Ununifu-Hospital app iS rUnNiNg On PoRt ${port} `);
+    console.log(`Ubunifu-Hospital app iS rUnNiNg On PoRt ${port} `);
 });
