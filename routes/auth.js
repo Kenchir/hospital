@@ -221,27 +221,27 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isAdmin, async (req,
                             subject: 'Staff registration',
                             receiver: body.email
                         }
-                        const smtpTransport = await Nodemailer.createTransport({
+                        const smtpTransport = Nodemailer.createTransport({
                             host: 'smtp.gmail.com',
                             port: 465,
                             secure: true,
                             auth: {
                                 type: 'OAuth2',
-
-                                user: 'devteamke2018@gmail.com',
-                                clientId: '719159077041-5ritn1ir75ic87p1gjo37c7gr5ko197m.apps.googleusercontent.com',
-                                clientSecret: 'I5wZkEJ--0dNg5slemh7R33Z',
-                                refreshToken: '1/0qI_HzCYp26oqIfL49fuRVnayfAwf7VrOfav7ZK9IQs'
+                                user: 'info.benitatravels@gmail.com',
+                                clientId: '122527083108-gvkneborudehmsfmo0n8miencd9erut9.apps.googleusercontent.com',
+                                clientSecret: '_f2d9Bzb-evU_nziBamReUpX',
+                                refreshToken: '1/U9s9uESVN5Qe-8QBTPvoGl3yULVQF2RBhL9ZC7Qdm18'
                             }
                         })
                         let mailOptions = {
                             to: infoToSend.receiver,
-                            from: 'devteamke2018@gmail.com',
+                            from: 'info.benitatravels@gmail.com',
                             subject: infoToSend.subject,
                             text: infoToSend.message,
                         };
                         smtpTransport.sendMail(mailOptions, (err, info) => {
                             if (err) {
+                                console.log(err)
                                 req.flash('error', err)
                                 res.redirect("back")
                                 //console.log('It was here err', status)
@@ -499,7 +499,7 @@ router.post("/resetPassword", function (req, res, next) {
             let mailOptions = {
                 to: user.email,
                 from: 'info.benitatravels@gmail.com',
-                subject: 'Benia Account Password Reset',
+                subject: 'Benia Acct Password Reset',
                 text: 'You are receiving this  mail to set your password and account  ' + '\n\n' +
                     'Click on the link or paste it into your browser to go on and reset your password' + '\n\n' +
                     'http://' + req.headers.host + '/resetpassword/' + token + '\n\n' +
