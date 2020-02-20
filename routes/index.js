@@ -26,7 +26,7 @@ cloudinary.config(config.cloudinary);
 let token = crypto.randomBytes(7).toString("hex");
 //Mutler configuration move during refactoring
 const storage = multer.diskStorage({
-    filename: function(req, file, callback) {
+    filename: function (req, file, callback) {
         let name = req.body.name;
         let fname = "";
         if (name.split(" ").length > 1) {
@@ -42,13 +42,13 @@ const storage = multer.diskStorage({
 
         callback(null, customName + "." + fileExtension);
     },
-    onError: function(err, next) {
+    onError: function (err, next) {
         //   console.log('error', err);
         next(err);
     }
 });
 
-let fileFilter = function(req, file, cb) {
+let fileFilter = function (req, file, cb) {
     // accept image files only
     if (req.originalUrl == "/profilepic") {
         if (!file.originalname.match(/\.(jpg|jpeg|png|gif|)$/i)) {
@@ -79,22 +79,22 @@ router.get(
     "/users",
     Middleware.isLoggedIn,
     Middleware.isAdmin,
-    async(req, res) => {
+    async (req, res) => {
         let aggregate = User.aggregate([{ $match: { role: "client" } }])
 
-        .lookup({
-            from: "bookings",
-            let: { userId: "$_id" },
-            pipeline: [
-                { $addFields: { userId: "$userId" } },
-                { $match: { $expr: { $eq: ["$clientId", "$$userId"] } } },
-                { $project: { _id: 1 } }
-            ],
+            .lookup({
+                from: "bookings",
+                let: { userId: "$_id" },
+                pipeline: [
+                    { $addFields: { userId: "$userId" } },
+                    { $match: { $expr: { $eq: ["$clientId", "$$userId"] } } },
+                    { $project: { _id: 1 } }
+                ],
 
-            as: "bookings"
-        })
+                as: "bookings"
+            })
 
-        .project({ __v: 0 });
+            .project({ __v: 0 });
         const options = {};
         User.aggregatePaginate(aggregate, options).then(result => {
             // console.log('[docs]', result.docs);
@@ -103,7 +103,7 @@ router.get(
         });
     }
 );
-router.get("/admin", Middleware.isLoggedIn, async(req, res) => {
+router.get("/admin", async (req, res) => {
     let users = await User.find({})
         .sort({ createdAt: -1 })
         .limit(4);
@@ -115,20 +115,20 @@ router.get("/admin", Middleware.isLoggedIn, async(req, res) => {
     let allCases = await PatCaseTrack.find({})
     let aggregate = await PatCaseTrack.aggregate([
 
-            {
-                $lookup: {
-                    from: "patients",
-                    localField: "patId",
-                    foreignField: "_id",
-                    as: "patient"
-                }
-            },
-            { $sort: { createdAt: -1 } },
-            { $limit: 6 }
-        ])
-        // const options = {};
-        // let recentCases = await PatCaseTrack.aggregatePaginate(aggregate, options);
-        // console.log(recentCases)
+        {
+            $lookup: {
+                from: "patients",
+                localField: "patId",
+                foreignField: "_id",
+                as: "patient"
+            }
+        },
+        { $sort: { createdAt: -1 } },
+        { $limit: 6 }
+    ])
+    // const options = {};
+    // let recentCases = await PatCaseTrack.aggregatePaginate(aggregate, options);
+    // console.log(recentCases)
     res.render("index", {
         patients,
         recentCases: aggregate,
@@ -185,7 +185,7 @@ router.post(
     "/register_patient",
     Middleware.isLoggedIn,
 
-    async(req, res) => {
+    async (req, res) => {
         const { body } = req;
 
         if (!body.fname ||
@@ -199,7 +199,7 @@ router.post(
             req.flash("error", "All fields should be filled.");
             return res.redirect("back");
         }
-        let newPatient = {...body };
+        let newPatient = { ...body };
         let idNumtoGenerateQrcode = "";
         if (body.citizenship == "Kenyan") {
             idNumtoGenerateQrcode = body.idNumber;
@@ -241,7 +241,7 @@ router.post(
                     req.flash("error", "E-mail Already exists");
                     res.redirect("back");
                 } else {
-                    newPatient = new Patient({...newPatient });
+                    newPatient = new Patient({ ...newPatient });
                     // console.log(newPackage);
                     newPatient.save();
                     console.log(newPatient);
@@ -301,7 +301,7 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.redirect("/", Middleware.isLoggedIn, (req, res) => {});
+    res.redirect("/", Middleware.isLoggedIn, (req, res) => { });
 }
 
 module.exports = router;

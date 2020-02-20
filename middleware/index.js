@@ -13,13 +13,10 @@ const QRCode = require("qrcode");
 const logger = require("../logger/logger");
 
 middlewareObj.isLoggedIn = function(req, res, next) {
-  // console.log('passed')
-  if (req.isAuthenticated()) {
+ 
     return next();
-  }
-  req.session.returnTo = req.path;
-  req.flash("error", "Please Login first");
-  res.redirect("/login");
+  
+ 
 };
 middlewareObj.generateQRCode = (uniqueNum, email, id) => {
   console.log("recently");
