@@ -28,8 +28,8 @@ const cryptoRandomString = require('crypto-random-string');
 const multer = require('multer');
 const cloudinary = require('cloudinary');
 const xoauth2 = require("xoauth2");
-
-
+const { emailAuth } = require("../config")
+const mg = require('nodemailer-mailgun-transport');
 var storage = multer.diskStorage({
     filename: function (req, file, callback) {
         callback(null, Date.now() + file.originalname);
@@ -44,31 +44,25 @@ var imageFilter = function (req, file, cb) {
 };
 var upload = multer({ storage: storage, fileFilter: imageFilter })
 router.get("/login", (req, res) => {
-
+    // console.log("gdhgd")
     res.render("login");
 })
 //renders the registtration page
 router.get("/register", (req, res) => {
     res.render("register");
 })
-router.post("/login", passport.authenticate("local", { failureFlash: "Sorry, Wrong Credentials!", failureRedirect: "/login" }), function (req, res) {
-    logger.infoLog.info(middleware.capitalize(req.user.username) + " has just logged in " + " at " + moment(moment().valueOf()).format('h:mm:a,  Do MMMM  YYYY,,'))
-
-    if ((req.user.role == 'admin') && (req.user.isActive == false)) {
-        console.log("Wrong pass")
-        req.flash('error', 'Your Account has  been suspended.  Contact your admin.')
-        res.redirect('back');
-        delete req.session.returnTo;
-    } else {
-        console.log('Role', req.user.role)
-
-        // req.flash("success", "Login successful!")
-        res.redirect(req.session.returnTo || '/admin');
-        delete req.session.returnTo;
+router.post(
+    "/login",
+    passport.authenticate("local", {
+        failureFlash: "Sorry, Wrong Credentials!",
+        failureRedirect: "/login"
+    }),
+    (req, res) => {
+        console.log("Successfully loged in");
+        req.flash("success", "Login successful! Welcome");
+        res.redirect("/admin");
     }
-
-
-});
+);
 router.get("/logout", function (req, res) {
 
     if (req.isAuthenticated()) {
@@ -93,9 +87,6 @@ router.get("/logout", function (req, res) {
 router.post("/register", async (req, res, next) => {
     //console.log(req.body);
     let token = crypto.randomBytes(25).toString('hex');
-    logger.infoLog.info("User registration request received from " + middleware.capitalize(req.body.fname));
-    
-    logger.infoLog.info("Name: " + middleware.capitalize(req.body.fname) + "email: " + req.body.email + " has requested registration" + " at " + moment(moment().valueOf()).format('h:mm:a,  Do MMMM  YYYY,'));
     let isValid = SignUp.validate({
         uname: req.body.uname,
         fname: req.body.fname,
@@ -104,10 +95,10 @@ router.post("/register", async (req, res, next) => {
         phone: req.body.phone,
         password: req.body.pass1,
     });
-    //console.log(isValid.value.role)
+
 
     if (isValid.error) {
-        // console.log(isValid.value.password)
+        console.log("Here")
         //Add response to invalid on client side
         req.flash("error", isValid.error.message);
         res.redirect("back");
@@ -115,10 +106,12 @@ router.post("/register", async (req, res, next) => {
     }
 
     if (isValid.value.password != req.body.pass2) {
+        console.log("Err here line 112")
         req.flash("error", "Password do not match");
         res.redirect("back");
         return;
     }
+
     User.findOne({ email: isValid.value.email }, (error, email) => {
         if (email) {
             console.log(email)
@@ -127,39 +120,45 @@ router.post("/register", async (req, res, next) => {
         }
     })
 
-    // console.log("successful")
+    console.log(User)
     //check if email does not exists      
-    User.findOne({ username: isValid.value.uname }, (error, email) => {
-        if (email) {
-            req.flash("error", " The email you entered is already in use !");
-            res.redirect("back");
-        } else {
-            let user = {
-                username: isValid.value.uname,
-                fname: isValid.value.fname,
-                verifyToken: token,
-                verifyExpires: Date.now() + 3600000,
-                lname: isValid.value.lname,
-                phone: isValid.value.phone,
-                role: 'client',
-                email: isValid.value.email
-            }
-            User.register(new User({
-                ...user
+    User.find({ username: isValid.value.uname })
+        .then((error, email) => {
+            console.log(isValid.value)
 
-            }), isValid.value.password, (err, newuser) => {
-                console.log(newuser)
-                if (err) {
-                    req.flash("error", err.message);
-                    res.redirect("register");
-                } else {
-                    
+            if (email) {
+                console.log("err here")
+                req.flash("error", " The email you entered is already in use !");
+                res.redirect("back");
+            } else {
+                let user = {
+                    username: isValid.value.uname,
+                    fname: isValid.value.fname,
+                    verifyToken: token,
+                    verifyExpires: Date.now() + 3600000,
+                    lname: isValid.value.lname,
+                    phone: isValid.value.phone,
+                    role: 'admin',
+                    email: isValid.value.email
+                }
+                console.log(user)
+                User.register(new User({
+                    ...user
+
+                }), isValid.value.password, (err, newuser) => {
+                    console.log(newuser)
+                    if (err) {
+                        req.flash("error", err.message);
+                        res.redirect("register");
+                    } else {
+
                         req.flash('success', 'Your registration was successful, You can now login');
                         res.redirect("/login");
                     }
-            });
-        }
-    });
+                });
+            }
+        })
+        .catch(err => console.log(err))
 
 });
 
@@ -176,7 +175,7 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isAdmin, async (req,
     //console.log(req.body);
     //console.log("A new admin " + middleware.capitalize(req.body.fname)  +" using email: " + req.body.email + " has requested registration" + " at " + moment(moment().valueOf()).format('h:mm:a,  Do MMMM  YYYY,'));
 
-    if (!body.email || !body.fname || !body.lname||!body.role) {
+    if (!body.email || !body.fname || !body.lname || !body.role) {
         req.flash("error", 'All fields must be filled');
         return res.redirect("back");
     }
@@ -185,82 +184,83 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isAdmin, async (req,
     var password = "123";
 
     var username = Lowercase(body.fname) + Math.floor(Math.random() * (+10 - +0)) + +1;
+    //  console.log(req.body)
+    User.findOne({ email: body.email })
+        .then(async (email) => {
+            if (email) {
+                console.log(email)
+                req.flash("error", " The email you entered is already in use !");
+                res.redirect("/add_admin");
+            } else {
+                //console.log(here)
+                User.register(new User({
+                    username,
+                    fname: body.fname,
+                    verifyToken: token,
+                    isActive: false,
+                    verifyExpires: Date.now() + 3600000,
+                    lname: body.lname,
+                    role: body.role,
+                    email: body.email,
+                    // yearOfHire: today,
+                    role: body.role,
 
-    User.findOne({ email: body.email }, async ( email) => {
-        if (email) {
+                    registeredBy: user._id
+                }), password, async (err, user) => {
+                    if (err) {
+                        req.flash("error", err.message);
+                        res.redirect("add_admin");
+                    } else {
 
-            req.flash("error", " The email you entered is already in use !");
-            res.redirect("add_admin");
-        } else {
 
-            User.register(new User({
-                username,
-                fname: body.fname,
-                verifyToken: token,
-                isActive: false,
-                verifyExpires: Date.now() + 3600000,
-                lname: body.lname,
-                role:body.role,
-                email: body.email,
-                // yearOfHire: today,
-                role: 'admin',
+                        const infoToSend = {
+                            message: 'Hello \b' + user.fname + '\b' + '\n\n' + 'You are receiving this  from Ubunifu Hospital that you have been added as ' + user.role + '. Complete by  setting up your password for the account' + '\n\n' +
+                                'Click on the link or paste it into your browser to go on.' + '\n\n' + ' Your Username:\b' + username + '\b' + '\n\n' +
+                                'http://' + req.headers.host + '/confirmaccount/' + user.verifyToken + '\n\n' +
+                                'Welcome to Ubunifu Hospital',
+                            subject: 'Staff registration',
+                            receiver: body.email
+                        }
+                        const smtpTransport = await Nodemailer.createTransport({
+                            host: 'smtp.gmail.com',
+                            port: 465,
+                            secure: true,
+                            auth: {
+                                type: 'OAuth2',
 
-                registeredBy: user._id
-            }), password, async (err, user) => {
-                if (err) {
-                    req.flash("error", err.message);
-                    res.redirect("add_admin");
-                } else {
-                    //req.flash("success","New admin has added successful.")
-                    logger.infoLog.info(body.fname + " has been successfully registered ");
-                    //console.log(token);
-                    // console.log(user);
-                    logger.infoLog.info("Sending" + body.fname + " email for account completion setup  ");
-                    const infoToSend = {
-                        message: 'Hello \b' + user.fname + '\b' + '\n\n' + 'You are receiving this  from Ubunifu Hospital that you have been added as '+user.role+'. Complete by  setting up your password for the account' + '\n\n' +
-                            'Click on the link or paste it into your browser to go on.' + '\n\n' + ' Your Username:\b' + username + '\b' + '\n\n' +
-                            'http://' + req.headers.host + '/confirmaccount/' + user.verifyToken + '\n\n' +
-                            'Welcome to Ubunifu Hospital',
-                        subject: 'Staff registration',
-                        receiver: body.email
+                                user: 'devteamke2018@gmail.com',
+                                clientId: '719159077041-5ritn1ir75ic87p1gjo37c7gr5ko197m.apps.googleusercontent.com',
+                                clientSecret: 'I5wZkEJ--0dNg5slemh7R33Z',
+                                refreshToken: '1/0qI_HzCYp26oqIfL49fuRVnayfAwf7VrOfav7ZK9IQs'
+                            }
+                        })
+                        let mailOptions = {
+                            to: infoToSend.receiver,
+                            from: 'devteamke2018@gmail.com',
+                            subject: infoToSend.subject,
+                            text: infoToSend.message,
+                        };
+                        smtpTransport.sendMail(mailOptions, (err, info) => {
+                            if (err) {
+                                req.flash('error', err)
+                                res.redirect("back")
+                                //console.log('It was here err', status)
+                            } else {
+                                // console.log(info)
+                                req.flash('success', 'Your registration was successful. A mail has been sent to added user for sign up completion ');
+                                res.redirect("back");
+
+                            }
+
+                        });
+
                     }
-                    const smtpTransport = await Nodemailer.createTransport({
-                        host: 'smtp.gmail.com',
-                        port: 465,
-                        secure: true,
-                        auth: {
-                            type: 'OAuth2',
-                            user: 'info.benitatravels@gmail.com',
-                            clientId: '122527083108-gvkneborudehmsfmo0n8miencd9erut9.apps.googleusercontent.com',
-                            clientSecret: '_f2d9Bzb-evU_nziBamReUpX',
-                            refreshToken: '1/U9s9uESVN5Qe-8QBTPvoGl3yULVQF2RBhL9ZC7Qdm18'
-                        }
-                    })
-                    let mailOptions = {
-                        to: infoToSend.receiver,
-                        from: 'info.benitatravels@gmail.com',
-                        subject: infoToSend.subject,
-                        text: infoToSend.message,
-                    };
-                    await smtpTransport.sendMail(mailOptions, (err, info) => {
-                        if (err) {
-                            req.flash('error', err)
-                            res.redirect("back")
-                            //console.log('It was here err', status)
-                        } else {
-                            // console.log(info)
-                            req.flash('success', 'Your registration was successful. A mail has been sent to added user for sign up completion ');
-                            res.redirect("back");
-
-                        }
-
-                    });
-
-                }
-            });
-        }
-    });
+                });
+            }
+        });
 });
+
+
 router.get("/profile", middleware.isLoggedIn, async (req, res) => {
 
     res.render("profile");
@@ -497,7 +497,7 @@ router.post("/resetPassword", function (req, res, next) {
                 }
             })
             let mailOptions = {
-                to: infoToSend.receiver,
+                to: user.email,
                 from: 'info.benitatravels@gmail.com',
                 subject: 'Benia Account Password Reset',
                 text: 'You are receiving this  mail to set your password and account  ' + '\n\n' +
