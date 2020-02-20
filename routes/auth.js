@@ -58,7 +58,7 @@ router.post(
         failureRedirect: "/login"
     }),
     (req, res) => {
-        console.log("Successfully loged in");
+        //   console.log("Successfully loged in");
         req.flash("success", "Login successful! Welcome");
         res.redirect("/admin");
     }
@@ -215,7 +215,7 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isAdmin, async (req,
 
                         const infoToSend = {
                             message: 'Hello \b' + user.fname + '\b' + '\n\n' + 'You are receiving this  from Ubunifu Hospital that you have been added as ' + user.role + '. Complete by  setting up your password for the account' + '\n\n' +
-                                'Click on the link or paste it into your browser to go on.' + '\n\n' + ' Your Username:\b' + username + '\b' + '\n\n' +
+                                'Click on the link or paste it into your browser to go on.' + '\n\n' + ' Your Username:\b' + username + '\n' + "PAssword: " + password + '\b' + '\n\n' +
                                 'http://' + req.headers.host + '/confirmaccount/' + user.verifyToken + '\n\n' +
                                 'Welcome to Ubunifu Hospital',
                             subject: 'Staff registration',
