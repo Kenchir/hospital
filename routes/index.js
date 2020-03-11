@@ -74,7 +74,7 @@ let upload = multer({
 });
 
 //console.log(upload)
-
+router.get("/", (req, res) => { res.render("home_1") })
 router.get(
     "/users",
     Middleware.isLoggedIn,
@@ -243,10 +243,12 @@ router.post(
                 } else {
                     newPatient = new Patient({ ...newPatient });
                     // console.log(newPackage);
-                    newPatient.save();
-                    console.log(newPatient);
-                    req.flash("success", "Package added successfully");
-                    res.redirect("/patient/" + newPatient._id);
+                    newPatient.save().then(newPatient => {
+                        //  console.log(newPatient);
+                        req.flash("success", "Patient successfully");
+                        res.redirect("/patient/" + newPatient._id);
+                    })
+
                 }
             })
             .catch(err => {
@@ -256,12 +258,12 @@ router.post(
             });
     }
 );
-router.get("/patients", res => {
+router.get("/patients", (req, res) => {
     Patient.find({})
         .then(data => {
             if (data) {
                 // console.log(data)
-                res.render("patients", { report: data });
+                res.render("patients", { data: data });
             }
         })
         .catch(err => {
@@ -269,6 +271,7 @@ router.get("/patients", res => {
             res.redirect("back");
         });
 });
+
 router.get("/patient/:id", (req, res) => {
     Patient.findOne({ _id: req.params.id })
         .then(data => {
@@ -282,6 +285,7 @@ router.get("/patient/:id", (req, res) => {
             res.redirect("back");
         });
 });
+
 router.get("/staff", (req, res) => {
     User.find({})
         .then(data => {

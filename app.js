@@ -113,9 +113,9 @@ app.use(authRoutes);
 app.use(trackRoutes);
 app.use(express.static(publicPath));
 app.all("*", (req, res) => {
-    res.redirect("/login");
+    res.redirect("/");
 });
-app.get("/", res => res.redirect("/login"))
+//app.get("/", res => res.redirect("/login"))
 server.listen(port, () => {
     console.log(`Ubunifu-Hospital app iS rUnNiNg On PoRt ${port} `);
 });

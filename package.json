@@ -49,5 +49,7 @@
     "winston": "^3.2.1",
     "xoauth2": "^1.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
 }
