@@ -4,7 +4,7 @@ const mongoosePaginate = require("mongoose-aggregate-paginate-v2");
 const { Schema } = mongoose;
 const PatientSchema = new mongoose.Schema(
   {
-    QRcode: { type: Buffer, unique: true, required: true },
+    QRcode: { type: Buffer, required: true },
     QRcodeImage: String,
     fname: String,
     lname: String,
@@ -31,7 +31,7 @@ PatientSchema.methods.toJSON = function() {
     role: this.role,
     fname: this.fname,
     lname: this.lname,
-
+QRcodeImage:this.QRcodeImage,
     title: this.title,
     marital: this.marital,
     // resetPasswordExpires:this.resetPasswordExpires,
