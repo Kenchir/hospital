@@ -11,7 +11,7 @@ const PatientCaseTrackSchema = new Schema({
     },
     stage: {
         type: String,
-        enum: ["nurse", "lab", "doc", "reception", "completed"],
+        enum: ["nurse", "lab", "doc", "reception","doc_recommend", "completed"],
         default: "reception"
     }
 }, { timestamps: true });

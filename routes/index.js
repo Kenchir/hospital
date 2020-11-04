@@ -2,7 +2,7 @@ let express = require("express");
 let router = express.Router();
 const User = require("../models/user");
 const mongoose = require("mongoose");
-const Booking = require("../models/LabTestReq");
+const Booking = require("../models/Lab");
 const Package = require("../models/Package");
 const Patient = require("../models/Patients");
 const PatCaseTrack = require("../models/PatCaseTrack");
@@ -103,7 +103,8 @@ router.get(
         });
     }
 );
-router.get("/admin", async (req, res) => {
+router.get("/admin",Middleware.isLoggedIn, async (req, res) => {
+    console.log(req.user)
     let users = await User.find({})
         .sort({ createdAt: -1 })
         .limit(4);

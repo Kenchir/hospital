@@ -1,9 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const User = require("../models/user");
-const House = require("../models/Package");
 
-const Booking = require("../models/LabTestReq");
 
 // const Comment = require("../models/comments");
 // const Viewed = require("../models/houseviewed");
@@ -58,7 +56,7 @@ router.post(
         failureRedirect: "/login"
     }),
     (req, res) => {
-        //   console.log("Successfully loged in");
+          console.log("Successfully loged in");
         req.flash("success", "Login successful! Welcome");
         res.redirect("/admin");
     }
@@ -172,7 +170,7 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isAdmin, async (req,
     });
     const { body, user } = req;
     logger.infoLog.info("Admin registration request received from " + middleware.capitalize(req.user.username));
-    //console.log(req.body);
+    console.log(req.body);
     //console.log("A new admin " + middleware.capitalize(req.body.fname)  +" using email: " + req.body.email + " has requested registration" + " at " + moment(moment().valueOf()).format('h:mm:a,  Do MMMM  YYYY,'));
 
     if (!body.email || !body.fname || !body.lname || !body.role) {
@@ -208,6 +206,7 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isAdmin, async (req,
                     registeredBy: user._id
                 }), password, async (err, user) => {
                     if (err) {
+                        console.log(err)
                         req.flash("error", err.message);
                         res.redirect("add_admin");
                     } else {
@@ -227,15 +226,15 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isAdmin, async (req,
                             secure: true,
                             auth: {
                                 type: 'OAuth2',
-                                user: 'info.benitatravels@gmail.com',
-                                clientId: '122527083108-gvkneborudehmsfmo0n8miencd9erut9.apps.googleusercontent.com',
-                                clientSecret: '_f2d9Bzb-evU_nziBamReUpX',
-                                refreshToken: '1/U9s9uESVN5Qe-8QBTPvoGl3yULVQF2RBhL9ZC7Qdm18'
+                                user: 'kipkogeichirchir2@gmail.com',
+                                clientId: '1060782276524-t7n2bdjkida9iev4fcpm6col7mjrstsi.apps.googleusercontent.com',
+                                clientSecret: 'E1Ww2i9HyQuo3DqZhcYpQzjq',
+                                refreshToken: '1//04O1XU6p0HqmMCgYIARAAGAQSNwF-L9IrHA5EZQXtIvK2pSrDEB_jDb-FrEcNNZx2sm_WcmNd18nEtAKHLEyiELg9kzq2OLQTS68'
                             }
                         })
                         let mailOptions = {
                             to: infoToSend.receiver,
-                            from: 'info.benitatravels@gmail.com',
+                            from: 'kipkogeichirchir2@gmail.com',
                             subject: infoToSend.subject,
                             text: infoToSend.message,
                         };
@@ -246,10 +245,11 @@ router.post('/add_admin', middleware.isLoggedIn, middleware.isAdmin, async (req,
                                 res.redirect("back")
                                 //console.log('It was here err', status)
                             } else {
-                                // console.log(info)
-                                req.flash('success', 'Your registration was successful. A mail has been sent to added user for sign up completion ');
+                                 console.log(info)
+                                 user.isVerified=true;
+                                 user.save();
+                                req.flash("success", "Your registration was successful. A mail has been sent to added user for sign up completion");
                                 res.redirect("back");
-
                             }
 
                         });
